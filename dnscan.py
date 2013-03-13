@@ -7,47 +7,50 @@ from time import sleep
 
 # Usage: dnscan.py <domain name> <wordlist>
 
-target = sys.argv[1]
-
-# Opens wordlist, read and strip carriage returns
-wordlist = open(sys.argv[2]).read().splitlines()
-
-queue = Queue.Queue()
-          
 class queue_manager(threading.Thread):
     def __init__(self, queue):
         threading.Thread.__init__(self)
         self.queue = queue
 
-    def get_name(self, word):
+    def get_name(self, domain):
             try:
-                sys.stdout.write(word + "                              \r")
+                sys.stdout.write(domain + "                              \r")
                 socket.setdefaulttimeout(1)
-                ip = socket.gethostbyname(word + "." + target)
+                ip = socket.gethostbyname(domain)
             except socket.gaierror, socket.timeout:
                 pass
             else:       # 200
-                print ip + " - " + word + "." + target
+                print ip + " - " + domain
+                add_target(domain)
 
     def run(self):
         while True:
             try:
-                word = self.queue.get(timeout=2)
+                domain = self.queue.get(timeout=2)
             except:
                 return
-            self.get_name(word)
+            self.get_name(domain)
             self.queue.task_done()
 
 
+def add_target(domain):
+    for word in wordlist:
+        queue.put(word + "." + domain)
+
+def get_args():
+    global target,wordlist
+    target = sys.argv[1]
+    # Opens wordlist, read and strip carriage returns
+    wordlist = open(sys.argv[2]).read().splitlines()
+
 def main():
+    get_args()
     for i in range(32):      # Number of threads
         t = queue_manager(queue)
         t.setDaemon(True)
         t.start()
-
-    for word in wordlist:
-        queue.put(word)
-
+    add_target(target)
     queue.join()
 
+queue = Queue.Queue()
 main()
