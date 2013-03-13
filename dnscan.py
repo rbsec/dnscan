@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import Queue
 import threading
-import socket
+import dns.resolver
 import sys
 from time import sleep
 
@@ -15,18 +15,19 @@ class queue_manager(threading.Thread):
     def get_name(self, domain):
             try:
                 sys.stdout.write(domain + "                              \r")
-                socket.setdefaulttimeout(1)
-                ip = socket.gethostbyname(domain)
-            except socket.gaierror, socket.timeout:
+                resolver = dns.resolver.Resolver()
+                resolver.timeout = 1
+                res = resolver.query(domain, 'A')
+                for rdata in res:
+                    print rdata.address + " - " + domain
+                    add_target(domain)
+            except:
                 pass
-            else:       # 200
-                print ip + " - " + domain
-                add_target(domain)
 
     def run(self):
         while True:
             try:
-                domain = self.queue.get(timeout=2)
+                domain = self.queue.get(timeout=1)
             except:
                 return
             self.get_name(domain)
@@ -45,7 +46,7 @@ def get_args():
 
 def main():
     get_args()
-    for i in range(32):      # Number of threads
+    for i in range(8):      # Number of threads
         t = queue_manager(queue)
         t.setDaemon(True)
         t.start()
