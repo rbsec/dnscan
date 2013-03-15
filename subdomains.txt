@@ -56,6 +56,11 @@ development
 diana
 directory
 dmz
+dns
+dns1
+dns2
+dns3
+dns4
 domain
 domaincontroller
 domain-controller
