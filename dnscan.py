@@ -6,9 +6,9 @@ import sys
 
 # Usage: dnscan.py <domain name> <wordlist>
 
-class queue_manager(threading.Thread):
-    global wildcard
+class scanner(threading.Thread):
     def __init__(self, queue):
+        global wildcard
         threading.Thread.__init__(self)
         self.queue = queue
 
@@ -61,16 +61,19 @@ def get_wildcard(target):
         print "[+] Wildcard IP found - " + res[0].address
         return res[0].address
 
-def main():
-    global wildcard
+if __name__ == "__main__":
+    global wildcard, queue
+    num_threads = 8
+    queue = Queue.Queue()
     get_args()
     wildcard = get_wildcard(target)
-    for i in range(8):      # Number of threads
-        t = queue_manager(queue)
+    add_target(target)
+    for i in range(num_threads):
+        t = scanner(queue)
         t.setDaemon(True)
         t.start()
-    add_target(target)
-    queue.join()
-
-queue = Queue.Queue()
-main()
+    try:
+        for i in range(num_threads):
+            t.join(1024)       # Timeout needed or threads ignore exceptions..
+    except KeyboardInterrupt:
+        print "[-] Quitting..."
