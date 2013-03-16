@@ -100,6 +100,7 @@ if __name__ == "__main__":
     wildcard = get_wildcard(target)
     print "[*] Scanning " + target
     add_target(target)
+
     for i in range(num_threads):
         t = scanner(queue)
         t.setDaemon(True)
