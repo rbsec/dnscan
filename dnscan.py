@@ -1,10 +1,10 @@
 #!/usr/bin/env python
-import Queue
-import threading
-import dns.resolver
 import dns.query
+import dns.resolver
 import dns.zone
+import Queue
 import sys
+import threading
 
 # Usage: dnscan.py <domain name> <wordlist>
 
@@ -25,7 +25,7 @@ class scanner(threading.Thread):
                         if rdata.address == wildcard:
                             return
                     print rdata.address + " - " + domain
-                    add_target(domain)
+                    add_target(domain)  # Recursively scan subdomains
             except:
                 pass
 
@@ -46,7 +46,6 @@ def add_target(domain):
 def get_args():
     global target,wordlist
     target = sys.argv[1]
-    # Opens wordlist, read and strip carriage returns
     wordlist = open(sys.argv[2]).read().splitlines()
 
 def lookup(domain):
@@ -78,12 +77,13 @@ def get_nameservers(target):
 def zone_transfer(domain, ns):
     print "[*] Trying zone transfer against " + str(ns)
     try:
-        zone = dns.zone.from_xfr(dns.query.xfr(str(ns), domain, relativize=False), relativize=False)
+        zone = dns.zone.from_xfr(dns.query.xfr(str(ns), domain, relativize=False),
+                                 relativize=False)
         print "[+] Zone transfer sucessful"
         names = zone.nodes.keys()
         names.sort()
         for n in names:
-            print zone[n].to_text(n)
+            print zone[n].to_text(n)    # Print raw zone
         sys.exit()
     except Exception, e:
         pass
@@ -107,6 +107,6 @@ if __name__ == "__main__":
         t.start()
     try:
         for i in range(num_threads):
-            t.join(1024)       # Timeout needed or threads ignore exceptions..
+            t.join(1024)       # Timeout needed or threads ignore exceptions
     except KeyboardInterrupt:
         print "[-] Quitting..."
