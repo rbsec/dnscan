@@ -16,6 +16,7 @@ class scanner(threading.Thread):
             global wildcard
             try:
                 sys.stdout.write(domain + "                              \r")
+                sys.stdout.flush()
                 res = lookup(domain)
                 for rdata in res:
                     if wildcard:
