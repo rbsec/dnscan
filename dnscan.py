@@ -2,6 +2,8 @@
 import Queue
 import threading
 import dns.resolver
+import dns.query
+import dns.zone
 import sys
 
 # Usage: dnscan.py <domain name> <wordlist>
@@ -59,15 +61,44 @@ def lookup(domain):
 def get_wildcard(target):
     res = lookup("nonexistantdomain" + "." + target)
     if res:
-        print "[+] Wildcard IP found - " + res[0].address
+        print "[+] Wildcard domain found - " + res[0].address
         return res[0].address
+    else:
+        print "[+] No wildcard domain found"
+
+def get_nameservers(target):
+    resolver = dns.resolver.Resolver()
+    resolver.timeout = 1
+    try:
+        ns = resolver.query(target, 'NS')
+        return ns
+    except:
+        return
+
+def zone_transfer(domain, ns):
+    print "[*] Trying zone transfer against " + str(ns)
+    try:
+        zone = dns.zone.from_xfr(dns.query.xfr(str(ns), domain, relativize=False), relativize=False)
+        print "[+] Zone transfer sucessful"
+        names = zone.nodes.keys()
+        names.sort()
+        for n in names:
+            print zone[n].to_text(n)
+        sys.exit()
+    except Exception, e:
+        pass
 
 if __name__ == "__main__":
     global wildcard, queue
     num_threads = 8
     queue = Queue.Queue()
     get_args()
+    nameservers = get_nameservers(target)
+    for ns in nameservers:
+        zone_transfer(target, ns)
+    print "[-] Zone transfer failed"
     wildcard = get_wildcard(target)
+    print "[*] Scanning " + target
     add_target(target)
     for i in range(num_threads):
         t = scanner(queue)
