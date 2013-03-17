@@ -2,6 +2,7 @@
 import dns.query
 import dns.resolver
 import dns.zone
+import getopt
 import Queue
 import sys
 import threading
@@ -38,15 +39,6 @@ class scanner(threading.Thread):
             self.get_name(domain)
             self.queue.task_done()
 
-
-def add_target(domain):
-    for word in wordlist:
-        queue.put(word + "." + domain)
-
-def get_args():
-    global target,wordlist
-    target = sys.argv[1]
-    wordlist = open(sys.argv[2]).read().splitlines()
 
 def lookup(domain):
     resolver = dns.resolver.Resolver()
@@ -88,9 +80,50 @@ def zone_transfer(domain, ns):
     except Exception, e:
         pass
 
-if __name__ == "__main__":
-    global wildcard, queue
+def add_target(domain):
+    for word in wordlist:
+        queue.put(word + "." + domain)
+
+def get_args():
+    global target,wordlist,num_threads
+    target = None
+    wordlist = None
     num_threads = 8
+    if sys.argv[1:]:
+        optlist, args = getopt.getopt(sys.argv[1:], 'hd:w:t:', ["domain=", "wordlist=", "threads="])
+        for o, a in optlist:
+            if o == "-h":
+                usage()
+            elif o in ("-d", "--domain"):
+                target = a
+            elif o in ("-w", "--wordlist"):
+                try:
+                    wordlist = open(a).read().splitlines()
+                except:
+                    print "Error: could not open wordlist " + a
+                    sys.exit(1)
+            elif o in ("-t", "--threads"):
+                try:
+                    num_threads = int(a)
+                    if num_threads < 1:
+                        num_threads = 1
+                    elif num_threads > 32:
+                        num_threads = 32
+                    print num_threads
+                except:
+                    print "Error: thread count must be between 1 and 32"
+                    sys.exit(1)
+
+    if target is None or wordlist is None:
+        usage()
+
+
+def usage():
+    print "Usage: dnscan.py -w <wordlist> -d <domain> "
+    sys.exit(1)
+
+if __name__ == "__main__":
+    global wildcard, queue, num_threads
     queue = Queue.Queue()
     get_args()
     nameservers = get_nameservers(target)
