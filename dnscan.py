@@ -1,11 +1,15 @@
 #!/usr/bin/env python
-import dns.query
-import dns.resolver
-import dns.zone
 import getopt
 import Queue
 import sys
 import threading
+
+try:
+    import dns.query
+    import dns.resolver
+    import dns.zone
+except:
+    print "Error: module dnspython missing (python-dnspython)"
 
 # Usage: dnscan.py <domain name> <wordlist>
 
