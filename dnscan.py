@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+#
+# dnscan copyright (C) 2013 rbsec
+# Licensed under GPLv3, see LICENSE for details
+#
+
 import getopt
 import Queue
 import sys
