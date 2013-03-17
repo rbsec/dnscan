@@ -41,8 +41,6 @@ class scanner(threading.Thread):
 
 
 def lookup(domain):
-    resolver = dns.resolver.Resolver()
-    resolver.timeout = 1
     try:
         res = resolver.query(domain, 'A')
         return res
@@ -58,8 +56,6 @@ def get_wildcard(target):
         print "[+] No wildcard domain found"
 
 def get_nameservers(target):
-    resolver = dns.resolver.Resolver()
-    resolver.timeout = 1
     try:
         ns = resolver.query(target, 'NS')
         return ns
@@ -127,12 +123,22 @@ def usage():
     sys.exit(1)
 
 if __name__ == "__main__":
-    global wildcard, queue, num_threads
-    queue = Queue.Queue()
+    global wildcard, queue, num_threads, resolver
     get_args()
+    queue = Queue.Queue()
+    resolver = dns.resolver.Resolver()
+    resolver.timeout = 1
+
     nameservers = get_nameservers(target)
+    targetns = []       # NS servers for target
     for ns in nameservers:
+        ns = str(ns)[:-1]   # Removed trailing dot
+        res = lookup(ns)
+        for rdata in res:
+            targetns.append(rdata.address)
         zone_transfer(target, ns)
+    resolver.nameservers = targetns     # Use target's NS servers for lokups
+
     print "[-] Zone transfer failed"
     wildcard = get_wildcard(target)
     print "[*] Scanning " + target
@@ -142,6 +148,7 @@ if __name__ == "__main__":
         t = scanner(queue)
         t.setDaemon(True)
         t.start()
+
     try:
         for i in range(num_threads):
             t.join(1024)       # Timeout needed or threads ignore exceptions
