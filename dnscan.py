@@ -117,9 +117,13 @@ def get_args():
     if target is None or wordlist is None:
         usage()
 
-
 def usage():
-    print "Usage: dnscan.py -w <wordlist> -d <domain> "
+    print "Usage: dnscan.py -d <domain> -w <wordlist> [OPTIONS]\n"
+    print "Mandatory Arguments:"
+    print "\t-d, --domain\t\tTarget domain"
+    print "\t-w, --wordlist\t\tWordlist"
+    print "\nOptional Arguments:"
+    print "\t-t, --threads\t\tNumber of threads to use (1-32)"
     sys.exit(1)
 
 if __name__ == "__main__":
