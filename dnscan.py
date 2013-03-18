@@ -146,7 +146,8 @@ if __name__ == "__main__":
         for rdata in res:
             targetns.append(rdata.address)
         zone_transfer(target, ns)
-    resolver.nameservers = targetns     # Use target's NS servers for lokups
+#    resolver.nameservers = targetns     # Use target's NS servers for lokups
+# Missing results using domain's NS - removed for now
 
     print "[-] Zone transfer failed"
     wildcard = get_wildcard(target)
