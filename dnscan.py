@@ -14,7 +14,7 @@ try:
     import dns.resolver
     import dns.zone
 except:
-    print "Error: module dnspython missing (python-dnspython)"
+    out.fatal("Module dnspython missing (python-dnspython)")
 
 # Usage: dnscan.py <domain name> <wordlist>
 
@@ -59,6 +59,10 @@ class output:
 
     def bad(self, message):
         print col.red + "[-] " + col.end + message
+
+    def fatal(self, message):
+        print col.red + "FATAL: " + col.end + message
+
 
 class col:
     if sys.stdout.isatty():
@@ -128,7 +132,7 @@ def get_args():
                 try:
                     wordlist = open(a).read().splitlines()
                 except:
-                    print "Error: could not open wordlist " + a
+                    out.fatal("Could not open wordlist " + a)
                     sys.exit(1)
             elif o in ("-t", "--threads"):
                 try:
@@ -139,7 +143,7 @@ def get_args():
                         num_threads = 32
                     print num_threads
                 except:
-                    print "Error: thread count must be between 1 and 32"
+                    out.fatal("Thread count must be between 1 and 32")
                     sys.exit(1)
 
     if target is None or wordlist is None:
@@ -187,4 +191,4 @@ if __name__ == "__main__":
         for i in range(num_threads):
             t.join(1024)       # Timeout needed or threads ignore exceptions
     except KeyboardInterrupt:
-        out.status("Quitting...")
+        out.fatal("Quitting...")
