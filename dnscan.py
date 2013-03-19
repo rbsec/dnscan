@@ -27,8 +27,9 @@ class scanner(threading.Thread):
     def get_name(self, domain):
             global wildcard
             try:
-                sys.stdout.write(domain + "                              \r")
-                sys.stdout.flush()
+                if sys.stdout.isatty():
+                    sys.stdout.write(domain + "                              \r")
+                    sys.stdout.flush()
                 res = lookup(domain)
                 for rdata in res:
                     if wildcard:
@@ -60,10 +61,16 @@ class output:
         print col.red + "[-] " + col.end + message
 
 class col:
-    green = '\033[32m'
-    blue = '\033[34m'
-    red = '\033[31m'
-    end = '\033[0m'
+    if sys.stdout.isatty():
+        green = '\033[32m'
+        blue = '\033[34m'
+        red = '\033[31m'
+        end = '\033[0m'
+    else:
+        green = ""
+        blue = ""
+        red = ""
+        end = ""
 
 def lookup(domain):
     try:
