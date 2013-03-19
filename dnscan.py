@@ -51,14 +51,19 @@ class scanner(threading.Thread):
 
 class output:
     def status(self, message):
-        print "[*] " + message
+        print col.blue + "[*] " + col.end + message
 
     def good(self, message):
-        print "[+] " + message
+        print col.green + "[+] " + col.end + message
 
     def bad(self, message):
-        print "[-] " + message
+        print col.red + "[-] " + col.end + message
 
+class col:
+    green = '\033[32m'
+    blue = '\033[34m'
+    red = '\033[31m'
+    end = '\033[0m'
 
 def lookup(domain):
     try:
