@@ -35,7 +35,7 @@ class scanner(threading.Thread):
                         if rdata.address == wildcard:
                             return
                     print rdata.address + " - " + domain
-                    add_target(domain)  # Recursively scan subdomains
+                add_target(domain)  # Recursively scan subdomains
             except:
                 pass
 
