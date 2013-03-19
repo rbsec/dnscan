@@ -49,6 +49,17 @@ class scanner(threading.Thread):
             self.queue.task_done()
 
 
+class output:
+    def status(self, message):
+        print "[*] " + message
+
+    def good(self, message):
+        print "[+] " + message
+
+    def bad(self, message):
+        print "[-] " + message
+
+
 def lookup(domain):
     try:
         res = resolver.query(domain, 'A')
@@ -59,10 +70,10 @@ def lookup(domain):
 def get_wildcard(target):
     res = lookup("nonexistantdomain" + "." + target)
     if res:
-        print "[+] Wildcard domain found - " + res[0].address
+        out.good("Wildcard domain found - " + res[0].address)
         return res[0].address
     else:
-        print "[+] No wildcard domain found"
+        out.good("No wildcard domain found")
 
 def get_nameservers(target):
     try:
@@ -72,11 +83,11 @@ def get_nameservers(target):
         return
 
 def zone_transfer(domain, ns):
-    print "[*] Trying zone transfer against " + str(ns)
+    out.good("Trying zone transfer against " + str(ns))
     try:
         zone = dns.zone.from_xfr(dns.query.xfr(str(ns), domain, relativize=False),
                                  relativize=False)
-        print "[+] Zone transfer sucessful"
+        out.good("Zone transfer sucessful")
         names = zone.nodes.keys()
         names.sort()
         for n in names:
@@ -133,6 +144,7 @@ def usage():
 
 if __name__ == "__main__":
     global wildcard, queue, num_threads, resolver
+    out = output()
     get_args()
     queue = Queue.Queue()
     resolver = dns.resolver.Resolver()
@@ -149,9 +161,9 @@ if __name__ == "__main__":
 #    resolver.nameservers = targetns     # Use target's NS servers for lokups
 # Missing results using domain's NS - removed for now
 
-    print "[-] Zone transfer failed"
+    out.bad("Zone transfer failed")
     wildcard = get_wildcard(target)
-    print "[*] Scanning " + target
+    out.status("Scanning " + target)
     add_target(target)
 
     for i in range(num_threads):
@@ -163,4 +175,4 @@ if __name__ == "__main__":
         for i in range(num_threads):
             t.join(1024)       # Timeout needed or threads ignore exceptions
     except KeyboardInterrupt:
-        print "[-] Quitting..."
+        out.status("Quitting...")
