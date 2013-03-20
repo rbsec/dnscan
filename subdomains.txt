@@ -233,6 +233,7 @@ pegasus
 pendrell
 personal
 photo
+php
 photos
 pop
 pop3
