@@ -57,7 +57,7 @@ class output:
     def good(self, message):
         print col.green + "[+] " + col.end + message
 
-    def bad(self, message):
+    def warn(self, message):
         print col.red + "[-] " + col.end + message
 
     def fatal(self, message):
@@ -177,7 +177,7 @@ if __name__ == "__main__":
 #    resolver.nameservers = targetns     # Use target's NS servers for lokups
 # Missing results using domain's NS - removed for now
 
-    out.bad("Zone transfer failed")
+    out.warn("Zone transfer failed")
     wildcard = get_wildcard(target)
     out.status("Scanning " + target)
     add_target(target)
