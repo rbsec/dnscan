@@ -67,7 +67,7 @@ class output:
 class col:
     if sys.stdout.isatty():
         green = '\033[32m'
-        blue = '\033[34m'
+        blue = '\033[94m'
         red = '\033[31m'
         end = '\033[0m'
     else:
