@@ -4,7 +4,7 @@
 # Licensed under GPLv3, see LICENSE for details
 #
 
-import getopt
+import argparse
 import Queue
 import sys
 import threading
@@ -14,7 +14,8 @@ try:
     import dns.resolver
     import dns.zone
 except:
-    out.fatal("Module dnspython missing (python-dnspython)")
+    print "FATAL: Module dnspython missing (python-dnspython)")
+    sys.exit(1)
 
 # Usage: dnscan.py <domain name> <wordlist>
 
@@ -58,6 +59,10 @@ class output:
     def good(self, message):
         print col.green + "[+] " + col.end + message
 
+    def verbose(self, message):
+        if args.verbose:
+            print col.brown + "[v] " + col.end + message
+
     def warn(self, message):
         print col.red + "[-] " + col.end + message
 
@@ -70,12 +75,15 @@ class col:
         green = '\033[32m'
         blue = '\033[94m'
         red = '\033[31m'
+        brown = '\033[33m'
         end = '\033[0m'
     else:
         green = ""
         blue = ""
         red = ""
+        brown = ""
         end = ""
+
 
 def lookup(domain):
     try:
@@ -118,54 +126,39 @@ def add_target(domain):
         queue.put(word + "." + domain)
 
 def get_args():
-    global target,wordlist,num_threads
-    target = None
-    wordlist = None
-    num_threads = 8
-    if sys.argv[1:]:
-        optlist, args = getopt.getopt(sys.argv[1:], 'hd:w:t:', ["domain=", "wordlist=", "threads="])
-        for o, a in optlist:
-            if o == "-h":
-                usage()
-            elif o in ("-d", "--domain"):
-                target = a
-            elif o in ("-w", "--wordlist"):
-                try:
-                    wordlist = open(a).read().splitlines()
-                except:
-                    out.fatal("Could not open wordlist " + a)
-                    sys.exit(1)
-            elif o in ("-t", "--threads"):
-                try:
-                    num_threads = int(a)
-                    if num_threads < 1:
-                        num_threads = 1
-                    elif num_threads > 32:
-                        num_threads = 32
-                    print num_threads
-                except:
-                    out.fatal("Thread count must be between 1 and 32")
-                    sys.exit(1)
+    global args
+    
+    parser = argparse.ArgumentParser('dnscan.py', formatter_class=lambda prog:argparse.HelpFormatter(prog,max_help_position=40))
+    parser.add_argument('-d', '--domain', help='Target domain', dest='domain', required=True)
+    parser.add_argument('-w', '--wordlist', help='Wordlist', dest='wordlist', required=True)
+    parser.add_argument('-t', '--threads', help='Number of threads', dest='threads', required=False, type=int, default=8)
+    parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
+    args = parser.parse_args()
 
-    if target is None or wordlist is None:
-        usage()
+def setup():
+    global target, wordlist, queue, resolver
+    target = args.domain
+    try:
+        wordlist = open(args.wordlist).read().splitlines()
+    except:
+        out.fatal("Could not open wordlist " + args.wordlist)
+        sys.exit(1)
 
-def usage():
-    print "Usage: dnscan.py -d <domain> -w <wordlist> [OPTIONS]\n"
-    print "Mandatory Arguments:"
-    print "\t-d, --domain\t\tTarget domain"
-    print "\t-w, --wordlist\t\tWordlist"
-    print "\nOptional Arguments:"
-    print "\t-t, --threads\t\tNumber of threads to use (1-32)"
-    sys.exit(1)
-
-if __name__ == "__main__":
-    global wildcard, queue, num_threads, resolver
-    out = output()
-    get_args()
+    # Number of threads should be between 1 and 32
+    if args.threads < 1:
+        args.threads = 1
+    elif args.threads > 32:
+        args.threads = 32
     queue = Queue.Queue()
     resolver = dns.resolver.Resolver()
     resolver.timeout = 1
+
+
+if __name__ == "__main__":
+    global wildcard
+    out = output()
+    get_args()
+    setup()
 
     nameservers = get_nameservers(target)
     targetns = []       # NS servers for target
@@ -177,20 +170,19 @@ if __name__ == "__main__":
         zone_transfer(target, ns)
 #    resolver.nameservers = targetns     # Use target's NS servers for lokups
 # Missing results using domain's NS - removed for now
-
     out.warn("Zone transfer failed")
+
     wildcard = get_wildcard(target)
     out.status("Scanning " + target)
     queue.put(target)   # Add actual domain as well as subdomains
     add_target(target)
 
-    for i in range(num_threads):
+    for i in range(args.threads):
         t = scanner(queue)
         t.setDaemon(True)
         t.start()
-
     try:
-        for i in range(num_threads):
+        for i in range(args.threads):
             t.join(1024)       # Timeout needed or threads ignore exceptions
     except KeyboardInterrupt:
         out.fatal("Quitting...")
