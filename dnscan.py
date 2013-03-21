@@ -36,7 +36,8 @@ class scanner(threading.Thread):
                         if rdata.address == wildcard:
                             return
                     print rdata.address + " - " + domain
-                add_target(domain)  # Recursively scan subdomains
+                if domain != target:    # Don't scan root domain twice
+                    add_target(domain)  # Recursively scan subdomains
             except:
                 pass
 
@@ -180,6 +181,7 @@ if __name__ == "__main__":
     out.warn("Zone transfer failed")
     wildcard = get_wildcard(target)
     out.status("Scanning " + target)
+    queue.put(target)   # Add actual domain as well as subdomains
     add_target(target)
 
     for i in range(num_threads):
