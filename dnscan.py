@@ -14,7 +14,7 @@ try:
     import dns.resolver
     import dns.zone
 except:
-    print "FATAL: Module dnspython missing (python-dnspython)")
+    print "FATAL: Module dnspython missing (python-dnspython)"
     sys.exit(1)
 
 # Usage: dnscan.py <domain name> <wordlist>
