@@ -4,10 +4,15 @@
 # Licensed under GPLv3, see LICENSE for details
 #
 
-import argparse
 import Queue
 import sys
 import threading
+
+try:
+    import argparse
+except:
+    print "FATAL: Module argparse missing (python-argparse)"
+    sys.exit(1)
 
 try:
     import dns.query
