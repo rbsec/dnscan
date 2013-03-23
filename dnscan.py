@@ -4,6 +4,7 @@
 # Licensed under GPLv3, see LICENSE for details
 #
 
+import os
 import Queue
 import sys
 import threading
@@ -135,7 +136,7 @@ def get_args():
     
     parser = argparse.ArgumentParser('dnscan.py', formatter_class=lambda prog:argparse.HelpFormatter(prog,max_help_position=40))
     parser.add_argument('-d', '--domain', help='Target domain', dest='domain', required=True)
-    parser.add_argument('-w', '--wordlist', help='Wordlist', dest='wordlist', required=True)
+    parser.add_argument('-w', '--wordlist', help='Wordlist', dest='wordlist', required=False)
     parser.add_argument('-t', '--threads', help='Number of threads', dest='threads', required=False, type=int, default=8)
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
     args = parser.parse_args()
@@ -143,6 +144,8 @@ def get_args():
 def setup():
     global target, wordlist, queue, resolver
     target = args.domain
+    if not args.wordlist:
+        args.wordlist = os.path.dirname(os.path.realpath(__file__)) + "/subdomains.txt"
     try:
         wordlist = open(args.wordlist).read().splitlines()
     except:
