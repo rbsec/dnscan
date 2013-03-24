@@ -23,7 +23,7 @@ except:
     print "FATAL: Module dnspython missing (python-dnspython)"
     sys.exit(1)
 
-# Usage: dnscan.py <domain name> <wordlist>
+# Usage: dnscan.py -d <domain name>
 
 class scanner(threading.Thread):
     def __init__(self, queue):
@@ -34,7 +34,7 @@ class scanner(threading.Thread):
     def get_name(self, domain):
             global wildcard
             try:
-                if sys.stdout.isatty():
+                if sys.stdout.isatty():     # Don't spam output if redirected
                     sys.stdout.write(domain + "                              \r")
                     sys.stdout.flush()
                 res = lookup(domain)
@@ -83,7 +83,7 @@ class col:
         red = '\033[31m'
         brown = '\033[33m'
         end = '\033[0m'
-    else:
+    else:   # Colours mess up redirected output, disable them
         green = ""
         blue = ""
         red = ""
@@ -144,7 +144,7 @@ def get_args():
 def setup():
     global target, wordlist, queue, resolver
     target = args.domain
-    if not args.wordlist:
+    if not args.wordlist:   # Try to use default wordlist if non specified
         args.wordlist = os.path.dirname(os.path.realpath(__file__)) + "/subdomains.txt"
     try:
         wordlist = open(args.wordlist).read().splitlines()
