@@ -170,12 +170,15 @@ if __name__ == "__main__":
 
     nameservers = get_nameservers(target)
     targetns = []       # NS servers for target
-    for ns in nameservers:
-        ns = str(ns)[:-1]   # Removed trailing dot
-        res = lookup(ns)
-        for rdata in res:
-            targetns.append(rdata.address)
-        zone_transfer(target, ns)
+    try:    # Subdomains often don't have NS recoards..
+        for ns in nameservers:
+            ns = str(ns)[:-1]   # Removed trailing dot
+            res = lookup(ns)
+            for rdata in res:
+                targetns.append(rdata.address)
+            zone_transfer(target, ns)
+    except:
+        out.warn("Getting nameservers failed")
 #    resolver.nameservers = targetns     # Use target's NS servers for lokups
 # Missing results using domain's NS - removed for now
     out.warn("Zone transfer failed")
