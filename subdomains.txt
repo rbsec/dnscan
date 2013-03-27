@@ -61,6 +61,8 @@ dns1
 dns2
 dns3
 dns4
+doc
+docs
 domain
 domaincontroller
 domain-controller
@@ -298,6 +300,7 @@ testing
 tftp
 training
 tunnel
+tutorials
 u
 uk
 unix
