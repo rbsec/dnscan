@@ -113,6 +113,15 @@ def get_nameservers(target):
     except:
         return
 
+def get_txt(target):
+    out.status("Getting TXT records")
+    try:
+        res = resolver.query(target, 'TXT')
+        for txt in res:
+            print txt
+    except:
+        return
+
 def zone_transfer(domain, ns):
     out.good("Trying zone transfer against " + str(ns))
     try:
@@ -180,6 +189,7 @@ if __name__ == "__main__":
 # Missing results using domain's NS - removed for now
     out.warn("Zone transfer failed")
 
+    get_txt(target)
     wildcard = get_wildcard(target)
     out.status("Scanning " + target)
     queue.put(target)   # Add actual domain as well as subdomains
