@@ -122,6 +122,15 @@ def get_txt(target):
     except:
         return
 
+def get_mx(target):
+    out.status("Getting MX records")
+    try:
+        res = resolver.query(target, 'MX')
+        for mx in res:
+            print mx
+    except:
+        return
+
 def zone_transfer(domain, ns):
     out.good("Trying zone transfer against " + str(ns))
     try:
@@ -190,6 +199,7 @@ if __name__ == "__main__":
     out.warn("Zone transfer failed")
 
     get_txt(target)
+    get_mx(target)
     wildcard = get_wildcard(target)
     out.status("Scanning " + target)
     queue.put(target)   # Add actual domain as well as subdomains
