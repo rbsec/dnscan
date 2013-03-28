@@ -132,7 +132,7 @@ def get_mx(target):
         return
 
 def zone_transfer(domain, ns):
-    out.good("Trying zone transfer against " + str(ns))
+    out.status("Trying zone transfer against " + str(ns))
     try:
         zone = dns.zone.from_xfr(dns.query.xfr(str(ns), domain, relativize=False),
                                  relativize=False)
