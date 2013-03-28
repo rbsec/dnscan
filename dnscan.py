@@ -93,7 +93,7 @@ class col:
 
 def lookup(domain):
     try:
-        res = resolver.query(domain, 'A')
+        res = resolver.query(domain, recordtype)
         return res
     except:
         return
@@ -156,11 +156,12 @@ def get_args():
     parser.add_argument('-d', '--domain', help='Target domain', dest='domain', required=True)
     parser.add_argument('-w', '--wordlist', help='Wordlist', dest='wordlist', required=False)
     parser.add_argument('-t', '--threads', help='Number of threads', dest='threads', required=False, type=int, default=8)
+    parser.add_argument('-6', '--ipv6', help='Scan for AAAA records', action="store_true", dest='ipv6', required=False, default=False)
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
     args = parser.parse_args()
 
 def setup():
-    global target, wordlist, queue, resolver
+    global target, wordlist, queue, resolver, recordtype
     target = args.domain
     if not args.wordlist:   # Try to use default wordlist if non specified
         args.wordlist = os.path.dirname(os.path.realpath(__file__)) + "/subdomains.txt"
@@ -179,6 +180,12 @@ def setup():
     resolver = dns.resolver.Resolver()
     resolver.timeout = 1
 
+    # Record type
+    if args.ipv6:
+        recordtype = 'AAAA'
+    else:
+        recordtype = 'A'
+
 
 if __name__ == "__main__":
     global wildcard
@@ -188,12 +195,15 @@ if __name__ == "__main__":
 
     nameservers = get_nameservers(target)
     targetns = []       # NS servers for target
-    for ns in nameservers:
-        ns = str(ns)[:-1]   # Removed trailing dot
-        res = lookup(ns)
-        for rdata in res:
-            targetns.append(rdata.address)
-        zone_transfer(target, ns)
+    try:    # Subdomains often don't have NS recoards..
+        for ns in nameservers:
+            ns = str(ns)[:-1]   # Removed trailing dot
+            res = lookup(ns)
+            for rdata in res:
+                targetns.append(rdata.address)
+            zone_transfer(target, ns)
+    except:
+        out.warn("Getting nameservers failed")
 #    resolver.nameservers = targetns     # Use target's NS servers for lokups
 # Missing results using domain's NS - removed for now
     out.warn("Zone transfer failed")
