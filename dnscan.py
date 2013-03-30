@@ -114,18 +114,20 @@ def get_nameservers(target):
         return
 
 def get_txt(target):
-    out.status("Getting TXT records")
+    out.status("Trying TXT records")
     try:
         res = resolver.query(target, 'TXT')
+        out.good("TXT records found")
         for txt in res:
             print txt
     except:
         return
 
 def get_mx(target):
-    out.status("Getting MX records")
+    out.status("Trying MX records")
     try:
         res = resolver.query(target, 'MX')
+        out.good("MX records found")
         for mx in res:
             print mx
     except:
