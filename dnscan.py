@@ -42,7 +42,7 @@ class scanner(threading.Thread):
                     if wildcard:
                         if rdata.address == wildcard:
                             return
-                    print rdata.address + " - " + domain
+                    print rdata.address + " - " + col.brown + domain + col.end
                 if domain != target:    # Don't scan root domain twice
                     add_target(domain)  # Recursively scan subdomains
             except:
