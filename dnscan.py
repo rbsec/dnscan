@@ -213,7 +213,7 @@ if __name__ == "__main__":
     get_txt(target)
     get_mx(target)
     wildcard = get_wildcard(target)
-    out.status("Scanning " + target)
+    out.status("Scanning " + target + " for " + col.blue + recordtype + col.end + " records")
     queue.put(target)   # Add actual domain as well as subdomains
     add_target(target)
 
