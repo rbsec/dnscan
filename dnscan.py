@@ -37,7 +37,7 @@ class scanner(threading.Thread):
                 if sys.stdout.isatty():     # Don't spam output if redirected
                     sys.stdout.write(domain + "                              \r")
                     sys.stdout.flush()
-                res = lookup(domain)
+                res = lookup(domain, recordtype)
                 for rdata in res:
                     if wildcard:
                         if rdata.address == wildcard:
@@ -91,7 +91,7 @@ class col:
         end = ""
 
 
-def lookup(domain):
+def lookup(domain, recordtype):
     try:
         res = resolver.query(domain, recordtype)
         return res
@@ -99,7 +99,7 @@ def lookup(domain):
         return
 
 def get_wildcard(target):
-    res = lookup("nonexistantdomain" + "." + target)
+    res = lookup("nonexistantdomain" + "." + target, recordtype)
     if res:
         out.good("Wildcard domain found - " + res[0].address)
         return res[0].address
@@ -116,7 +116,7 @@ def get_nameservers(target):
 def get_txt(target):
     out.status("Trying TXT records")
     try:
-        res = resolver.query(target, 'TXT')
+        res = lookup(target, "TXT")
         out.good("TXT records found")
         for txt in res:
             print txt
@@ -126,7 +126,7 @@ def get_txt(target):
 def get_mx(target):
     out.status("Trying MX records")
     try:
-        res = resolver.query(target, 'MX')
+        res = lookup(target, "MX")
         out.good("MX records found")
         for mx in res:
             print mx
@@ -200,7 +200,7 @@ if __name__ == "__main__":
     try:    # Subdomains often don't have NS recoards..
         for ns in nameservers:
             ns = str(ns)[:-1]   # Removed trailing dot
-            res = lookup(ns)
+            res = lookup(ns, "A")
             for rdata in res:
                 targetns.append(rdata.address)
             zone_transfer(target, ns)
