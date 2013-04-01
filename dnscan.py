@@ -104,7 +104,7 @@ def get_wildcard(target):
         out.good("Wildcard domain found - " + res[0].address)
         return res[0].address
     else:
-        out.good("No wildcard domain found")
+        out.verbose("No wildcard domain found")
 
 def get_nameservers(target):
     try:
@@ -114,27 +114,29 @@ def get_nameservers(target):
         return
 
 def get_txt(target):
-    out.status("Trying TXT records")
+    out.verbose("Trying TXT records")
     try:
         res = lookup(target, "TXT")
-        out.good("TXT records found")
+        if res:
+            out.good("TXT records found")
         for txt in res:
             print txt
     except:
         return
 
 def get_mx(target):
-    out.status("Trying MX records")
+    out.verbose("Trying MX records")
     try:
         res = lookup(target, "MX")
-        out.good("MX records found")
+        if res:
+            out.good("MX records found")
         for mx in res:
             print mx
     except:
         return
 
 def zone_transfer(domain, ns):
-    out.status("Trying zone transfer against " + str(ns))
+    out.verbose("Trying zone transfer against " + str(ns))
     try:
         zone = dns.zone.from_xfr(dns.query.xfr(str(ns), domain, relativize=False),
                                  relativize=False)
@@ -143,7 +145,7 @@ def zone_transfer(domain, ns):
         names.sort()
         for n in names:
             print zone[n].to_text(n)    # Print raw zone
-        sys.exit()
+        sys.exit(0)
     except Exception, e:
         pass
 
@@ -204,6 +206,8 @@ if __name__ == "__main__":
             for rdata in res:
                 targetns.append(rdata.address)
             zone_transfer(target, ns)
+    except SystemExit:
+        sys.exit(0)
     except:
         out.warn("Getting nameservers failed")
 #    resolver.nameservers = targetns     # Use target's NS servers for lokups
