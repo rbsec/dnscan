@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 #
 # dnscan copyright (C) 2013 rbsec
 # Licensed under GPLv3, see LICENSE for details
