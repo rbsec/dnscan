@@ -229,4 +229,4 @@ if __name__ == "__main__":
         for i in range(args.threads):
             t.join(1024)       # Timeout needed or threads ignore exceptions
     except KeyboardInterrupt:
-        out.fatal("Keyboard Interrupt, quitting...")
+        out.fatal("Caught KeyboardInterrupt, quitting...")
