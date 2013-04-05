@@ -73,7 +73,7 @@ class output:
         print col.red + "[-] " + col.end + message
 
     def fatal(self, message):
-        print col.red + "FATAL: " + col.end + message
+        print col.red + "FATAL: " + message + col.end 
 
 
 class col:
@@ -229,4 +229,4 @@ if __name__ == "__main__":
         for i in range(args.threads):
             t.join(1024)       # Timeout needed or threads ignore exceptions
     except KeyboardInterrupt:
-        out.fatal("Quitting...")
+        out.fatal("Caught KeyboardInterrupt, quitting...")
