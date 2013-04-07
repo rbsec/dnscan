@@ -5,14 +5,18 @@
 #
 
 import os
-import Queue
 import sys
 import threading
+
+try:    # Ugle hack because Python3 decided to rename Queue to queue
+    import Queue
+except ImportError:
+    import queue as Queue
 
 try:
     import argparse
 except:
-    print "FATAL: Module argparse missing (python-argparse)"
+    print("FATAL: Module argparse missing (python-argparse)")
     sys.exit(1)
 
 try:
@@ -20,7 +24,7 @@ try:
     import dns.resolver
     import dns.zone
 except:
-    print "FATAL: Module dnspython missing (python-dnspython)"
+    print("FATAL: Module dnspython missing (python-dnspython)")
     sys.exit(1)
 
 # Usage: dnscan.py -d <domain name>
@@ -42,7 +46,7 @@ class scanner(threading.Thread):
                     if wildcard:
                         if rdata.address == wildcard:
                             return
-                    print rdata.address + " - " + col.brown + domain + col.end
+                    print(rdata.address + " - " + col.brown + domain + col.end)
                 if domain != target:    # Don't scan root domain twice
                     add_target(domain)  # Recursively scan subdomains
             except:
@@ -60,20 +64,20 @@ class scanner(threading.Thread):
 
 class output:
     def status(self, message):
-        print col.blue + "[*] " + col.end + message
+        print(col.blue + "[*] " + col.end + message)
 
     def good(self, message):
-        print col.green + "[+] " + col.end + message
+        print( col.green + "[+] " + col.end + message)
 
     def verbose(self, message):
         if args.verbose:
-            print col.brown + "[v] " + col.end + message
+            print(col.brown + "[v] " + col.end + message)
 
     def warn(self, message):
-        print col.red + "[-] " + col.end + message
+        print(col.red + "[-] " + col.end + message)
 
     def fatal(self, message):
-        print col.red + "FATAL: " + message + col.end 
+        print(col.red + "FATAL: " + message + col.end)
 
 
 class col:
@@ -120,7 +124,7 @@ def get_txt(target):
         if res:
             out.good("TXT records found")
         for txt in res:
-            print txt
+            print(txt)
     except:
         return
 
@@ -131,7 +135,7 @@ def get_mx(target):
         if res:
             out.good("MX records found")
         for mx in res:
-            print mx
+            print(mx)
     except:
         return
 
@@ -141,12 +145,12 @@ def zone_transfer(domain, ns):
         zone = dns.zone.from_xfr(dns.query.xfr(str(ns), domain, relativize=False),
                                  relativize=False)
         out.good("Zone transfer sucessful")
-        names = zone.nodes.keys()
+        names = list(zone.nodes.keys())
         names.sort()
         for n in names:
-            print zone[n].to_text(n)    # Print raw zone
+            print(zone[n].to_text(n))    # Print raw zone
         sys.exit(0)
-    except Exception, e:
+    except Exception:
         pass
 
 def add_target(domain):
