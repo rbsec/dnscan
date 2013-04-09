@@ -8,7 +8,7 @@ import os
 import sys
 import threading
 
-try:    # Ugle hack because Python3 decided to rename Queue to queue
+try:    # Ugly hack because Python3 decided to rename Queue to queue
     import Queue
 except ImportError:
     import queue as Queue
