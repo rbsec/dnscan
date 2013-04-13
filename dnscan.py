@@ -77,7 +77,7 @@ class output:
         print(col.red + "[-] " + col.end + message)
 
     def fatal(self, message):
-        print(col.red + "FATAL: " + message + col.end)
+        print("\n" + col.red + "FATAL: " + message + col.end)
 
 
 class col:
