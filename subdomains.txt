@@ -10,6 +10,7 @@ apollo
 ayuda
 backup
 backups
+barracuda
 beta
 billing
 blackboard
