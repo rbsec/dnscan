@@ -144,7 +144,7 @@ def zone_transfer(domain, ns):
     try:
         zone = dns.zone.from_xfr(dns.query.xfr(str(ns), domain, relativize=False),
                                  relativize=False)
-        out.good("Zone transfer sucessful")
+        out.good("Zone transfer sucessful using nameserver " + col.brown + str(ns) + col.end)
         names = list(zone.nodes.keys())
         names.sort()
         for n in names:
