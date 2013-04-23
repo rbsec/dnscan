@@ -202,6 +202,7 @@ if __name__ == "__main__":
     setup()
 
     nameservers = get_nameservers(target)
+    out.good("Getting nameservers")
     targetns = []       # NS servers for target
     try:    # Subdomains often don't have NS recoards..
         for ns in nameservers:
@@ -209,6 +210,7 @@ if __name__ == "__main__":
             res = lookup(ns, "A")
             for rdata in res:
                 targetns.append(rdata.address)
+                print rdata.address + " - " + col.brown + ns + col.end
             zone_transfer(target, ns)
     except SystemExit:
         sys.exit(0)
