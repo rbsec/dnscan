@@ -105,7 +105,7 @@ def lookup(domain, recordtype):
 def get_wildcard(target):
     res = lookup("nonexistantdomain" + "." + target, recordtype)
     if res:
-        out.good("Wildcard domain found - " + res[0].address)
+        out.good(col.red + "Wildcard" + col.end + " domain found - " + col.brown + res[0].address + col.end)
         return res[0].address
     else:
         out.verbose("No wildcard domain found")
