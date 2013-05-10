@@ -105,7 +105,7 @@ def lookup(domain, recordtype):
 def get_wildcard(target):
     res = lookup("nonexistantdomain" + "." + target, recordtype)
     if res:
-        out.good("Wildcard domain found - " + res[0].address)
+        out.good(col.red + "Wildcard" + col.end + " domain found - " + col.brown + res[0].address + col.end)
         return res[0].address
     else:
         out.verbose("No wildcard domain found")
@@ -144,7 +144,7 @@ def zone_transfer(domain, ns):
     try:
         zone = dns.zone.from_xfr(dns.query.xfr(str(ns), domain, relativize=False),
                                  relativize=False)
-        out.good("Zone transfer sucessful")
+        out.good("Zone transfer sucessful using nameserver " + col.brown + str(ns) + col.end)
         names = list(zone.nodes.keys())
         names.sort()
         for n in names:
@@ -202,6 +202,7 @@ if __name__ == "__main__":
     setup()
 
     nameservers = get_nameservers(target)
+    out.good("Getting nameservers")
     targetns = []       # NS servers for target
     try:    # Subdomains often don't have NS recoards..
         for ns in nameservers:
@@ -209,6 +210,7 @@ if __name__ == "__main__":
             res = lookup(ns, "A")
             for rdata in res:
                 targetns.append(rdata.address)
+                print rdata.address + " - " + col.brown + ns + col.end
             zone_transfer(target, ns)
     except SystemExit:
         sys.exit(0)
