@@ -299,6 +299,8 @@ stats
 sun
 support
 t
+telewerk
+telework
 test
 testing
 tftp
