@@ -67,7 +67,7 @@ class output:
         print(col.blue + "[*] " + col.end + message)
 
     def good(self, message):
-        print( col.green + "[+] " + col.end + message)
+        print(col.green + "[+] " + col.end + message)
 
     def verbose(self, message):
         if args.verbose:
