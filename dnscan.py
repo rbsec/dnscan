@@ -5,6 +5,7 @@
 #
 
 import os
+import re
 import sys
 import threading
 
@@ -135,6 +136,9 @@ def get_mx(target):
         if res:
             out.good("MX records found")
         for mx in res:
+            mxsub = re.search("([a-z0-9\.\-]+)\."+target, str(mx), re.IGNORECASE)
+            if mxsub.group(1):
+                queue.put(mxsub.group(1) + "." + target)
             print(mx)
     except:
         return
@@ -200,6 +204,7 @@ if __name__ == "__main__":
     out = output()
     get_args()
     setup()
+    queue.put(target)   # Add actual domain as well as subdomains
 
     nameservers = get_nameservers(target)
     out.good("Getting nameservers")
@@ -224,7 +229,6 @@ if __name__ == "__main__":
     get_mx(target)
     wildcard = get_wildcard(target)
     out.status("Scanning " + target + " for " + col.brown + recordtype + col.end + " records")
-    queue.put(target)   # Add actual domain as well as subdomains
     add_target(target)
 
     for i in range(args.threads):
