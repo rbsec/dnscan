@@ -137,7 +137,7 @@ def get_mx(target):
             out.good("MX records found")
         for mx in res:
             mxsub = re.search("([a-z0-9\.\-]+)\."+target, str(mx), re.IGNORECASE)
-            if mxsub.group(1):
+            if mxsub.group(1) and mxsub.group(1) not in wordlist:
                 queue.put(mxsub.group(1) + "." + target)
             print(mx)
     except:
