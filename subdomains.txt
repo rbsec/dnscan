@@ -6,9 +6,12 @@ accounts
 admin
 administrator
 alpha
+api
 apollo
+autoconfig
 autodiscover
 ayuda
+b
 backup
 backups
 barracuda
@@ -50,10 +53,12 @@ db
 dbs
 dc
 de
+default
 demo
 demon
 demostration
 descargas
+dev
 developers
 development
 diana
@@ -123,6 +128,7 @@ imap3
 imap3d
 imapd
 imaps
+img
 imgs
 imogen
 in
@@ -133,6 +139,7 @@ intranet
 io
 ip
 ip6
+ipmi
 ipsec
 ipv6
 irc
@@ -158,6 +165,7 @@ legacy
 library
 linux
 lisa
+localhost
 log
 logs
 login
@@ -165,6 +173,7 @@ logon
 logs
 m
 mail
+mail2
 mailgate
 mailserver
 manager
@@ -220,6 +229,7 @@ nt
 ntp
 o
 office
+old
 on
 online
 op
@@ -299,6 +309,7 @@ squirrelmail
 ssh
 staff
 staging
+static
 stats
 sun
 support
@@ -342,10 +353,12 @@ web3
 webadmin
 webct
 webdb
+webdisk
 weblog
 webmail
 webmaster
 webmin
+whm
 win
 win32
 windows
