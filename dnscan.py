@@ -170,6 +170,7 @@ def get_args():
     parser.add_argument('-t', '--threads', help='Number of threads', dest='threads', required=False, type=int, default=8)
     parser.add_argument('-6', '--ipv6', help='Scan for AAAA records', action="store_true", dest='ipv6', required=False, default=False)
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
+    parser.add_argument('-z', '--zonetransfer', action="store_true", default=False, help='Only perform zone transfers', dest='zonetransfer', required=False)
     args = parser.parse_args()
 
 def setup():
@@ -224,6 +225,8 @@ if __name__ == "__main__":
 #    resolver.nameservers = targetns     # Use target's NS servers for lokups
 # Missing results using domain's NS - removed for now
     out.warn("Zone transfer failed")
+    if args.zonetransfer:
+        sys.exit(0)
 
     get_txt(target)
     get_mx(target)
