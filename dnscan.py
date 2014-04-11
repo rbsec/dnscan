@@ -48,7 +48,7 @@ class scanner(threading.Thread):
                         if rdata.address == wildcard:
                             return
                     print(rdata.address + " - " + col.brown + domain + col.end)
-                if domain != target:    # Don't scan root domain twice
+                if domain != target and args.recurse:    # Don't scan root domain twice
                     add_target(domain)  # Recursively scan subdomains
             except:
                 pass
@@ -171,6 +171,7 @@ def get_args():
     parser.add_argument('-6', '--ipv6', help='Scan for AAAA records', action="store_true", dest='ipv6', required=False, default=False)
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
     parser.add_argument('-z', '--zonetransfer', action="store_true", default=False, help='Only perform zone transfers', dest='zonetransfer', required=False)
+    parser.add_argument('-r', '--no-recurse', action="store_false", default=True, help='Don\' do recusive subdomain scanning', dest='recurse', required=False)
     args = parser.parse_args()
 
 def setup():
