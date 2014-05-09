@@ -171,7 +171,7 @@ def get_args():
     parser.add_argument('-6', '--ipv6', help='Scan for AAAA records', action="store_true", dest='ipv6', required=False, default=False)
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
     parser.add_argument('-z', '--zonetransfer', action="store_true", default=False, help='Only perform zone transfers', dest='zonetransfer', required=False)
-    parser.add_argument('-r', '--no-recurse', action="store_false", default=True, help="Don't do recusive subdomain scanning", dest='recurse', required=False)
+    parser.add_argument('-r', '--recursive', action="store_true", default=False, help="Recursively scan subdomains", dest='recurse', required=False)
     args = parser.parse_args()
 
 def setup():
