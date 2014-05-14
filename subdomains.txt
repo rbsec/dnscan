@@ -101,6 +101,7 @@ controller
 controlp
 controlpanel
 corp
+corporate
 correo
 correoweb
 cp
@@ -113,6 +114,7 @@ cvs
 d
 da
 data
+database
 db
 db1
 db2
@@ -161,6 +163,8 @@ downloads
 drupal
 e
 eaccess
+echo
+ecommerce
 edu
 ektron
 elearning
@@ -187,6 +191,7 @@ feedback
 feeds
 file
 files
+fileserver
 finance
 firewall
 folders
@@ -302,6 +307,7 @@ js
 jupiter
 k
 kb
+kerberos
 l
 la
 lab
@@ -420,12 +426,14 @@ nelson
 neon
 net
 netmail
+netscaler
 network
 network-ip
 networks
 new
 newmail
 news
+newsgroups
 newsite
 newsletter
 nl
@@ -461,6 +469,7 @@ oldwww
 on
 online
 op
+openbsd
 operation
 operations
 ops
@@ -503,6 +512,7 @@ pop3
 portal
 portfolio
 post
+postgres
 postgresql
 postman
 postmaster
@@ -548,9 +558,11 @@ resources
 restricted
 reviews
 robinhood
+root
 router
 rss
 rt
+rtmp
 ru
 s
 s1
@@ -565,6 +577,7 @@ sandbox
 sc
 search
 secure
+security
 seo
 server
 server1
@@ -588,6 +601,7 @@ smtp
 smtp1
 smtp2
 smtp3
+snmp
 social
 software
 solaris
@@ -598,6 +612,7 @@ speedtest
 sport
 sports
 sql
+sqlserver
 squirrel
 squirrelmail
 ssh
@@ -648,6 +663,7 @@ trac
 track
 tracker
 tracking
+train
 training
 travel
 ts
@@ -715,6 +731,7 @@ webmaster
 webmin
 webservices
 webstats
+webstore
 whm
 wifi
 wiki
@@ -725,6 +742,7 @@ wordpress
 work
 wp
 ws
+wsus
 ww
 ww0
 ww01

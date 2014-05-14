@@ -35,4 +35,4 @@ The **subdomain-uk-500.txt** and **subdomain-uk-1000.txt** lists are created usi
 
 The final (and default) wordlist (**subdomains.txt**) is based on the top 500 subdomains by popularity and the top 500 UK subdomains, but has had a number of manual additions made based on domains identified during testing.
 
-This list is sorted alphabetically and currently contains approximately **750** entries.
+This list is sorted alphabetically and currently contains approximately **770** entries.
