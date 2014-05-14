@@ -47,6 +47,8 @@ blog
 blogs
 board
 book
+booking
+bookings
 broadcast-ip
 bsd
 bt
@@ -59,6 +61,7 @@ cache
 cacti
 cal
 calendar
+cam
 careers
 cart
 cas
@@ -66,6 +69,7 @@ catalog
 catalogo
 catalogue
 cc
+cctv
 cdn
 cdn1
 cdn2
@@ -87,10 +91,15 @@ cn
 co
 community
 conference
+config
 connect
+contact
+contacts
 content
 control
 controller
+controlp
+controlpanel
 corp
 correo
 correoweb
@@ -113,11 +122,14 @@ dc
 de
 default
 demo
+demo2
 demon
 demostration
 descargas
 design
+desktop
 dev
+dev01
 dev1
 dev2
 devel
@@ -138,7 +150,11 @@ doc
 docs
 domain
 domain-controller
+domainadmin
+domaincontrol
 domaincontroller
+domaincontrolpanel
+domainmanagement
 domains
 download
 downloads
@@ -160,6 +176,7 @@ ex
 example
 examples
 exchange
+external
 extranet
 f
 facebook
@@ -172,6 +189,7 @@ file
 files
 finance
 firewall
+folders
 forms
 foro
 foros
@@ -185,6 +203,7 @@ fs
 ftp
 ftp1
 ftp2
+ftpadmin
 ftpd
 fw
 g
@@ -249,6 +268,7 @@ img3
 imgs
 imogen
 in
+incoming
 info
 inmuebles
 internal
@@ -308,6 +328,7 @@ loghost
 login
 logon
 logs
+london
 loopback
 love
 lp
@@ -316,6 +337,7 @@ lyncdiscover
 m
 m1
 m2
+magento
 mail
 mail01
 mail1
@@ -324,6 +346,8 @@ mail3
 mail4
 mail5
 mailadmin
+mailbackup
+mailbox
 mailer
 mailgate
 mailhost
@@ -376,6 +400,8 @@ mssql
 munin
 music
 mx
+mx-a
+mx-b
 mx0
 mx01
 mx02
@@ -385,8 +411,11 @@ mx2
 mx3
 my
 mysql
+mysql2
 n
 nagios
+nas
+nat
 nelson
 neon
 net
@@ -395,7 +424,9 @@ network
 network-ip
 networks
 new
+newmail
 news
+newsite
 newsletter
 nl
 noc
@@ -422,8 +453,11 @@ ntp1
 o
 oa
 office
+office2
 old
 oldmail
+oldsite
+oldwww
 on
 online
 op
@@ -433,9 +467,11 @@ ops
 ora
 oracle
 origin
+orion
 os
 osx
 ou
+outgoing
 outlook
 owa
 ox
@@ -454,6 +490,7 @@ pegasus
 pendrell
 personal
 pgsql
+phoenix
 photo
 photos
 php
@@ -464,6 +501,7 @@ poczta
 pop
 pop3
 portal
+portfolio
 post
 postgresql
 postman
@@ -496,14 +534,17 @@ ra
 radio
 radius
 ras
+rdp
 redirect
 redmine
 register
 relay
 remote
+remote2
 report
 reports
 research
+resources
 restricted
 reviews
 robinhood
@@ -533,10 +574,13 @@ services
 sftp
 share
 sharepoint
+shell
 shop
 shopping
+signup
 sip
 site
+siteadmin
 sitebuilder
 sites
 sms
@@ -582,6 +626,7 @@ survey
 sv
 svn
 t
+team
 tech
 telewerk
 telework
@@ -591,6 +636,8 @@ test1
 test2
 test3
 testing
+testsite
+testweb
 tftp
 thumbs
 ticket
@@ -609,6 +656,7 @@ tutorials
 tv
 tw
 u
+uat
 uk
 unix
 up
@@ -627,6 +675,7 @@ videos
 vip
 virtual
 vista
+vle
 vm
 vms
 vmware
@@ -638,6 +687,8 @@ vpn1
 vpn2
 vpn3
 vps
+vps1
+vps2
 w
 w3
 wap
@@ -652,6 +703,7 @@ web3
 web4
 web5
 webadmin
+webcam
 webconf
 webct
 webdb
@@ -661,6 +713,8 @@ webmail
 webmail2
 webmaster
 webmin
+webservices
+webstats
 whm
 wifi
 wiki
@@ -680,6 +734,7 @@ ww1
 ww2
 ww3
 www
+www-test
 www0
 www01
 www02
@@ -692,6 +747,7 @@ www5
 www6
 www7
 wwwm
+wwwold
 wwww
 x
 xml
