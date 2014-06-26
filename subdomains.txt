@@ -654,6 +654,7 @@ testing
 testsite
 testweb
 tftp
+tfs
 thumbs
 ticket
 tickets
