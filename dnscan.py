@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# dnscan copyright (C) 2013 rbsec
+# dnscan copyright (C) 2013-2014 rbsec
 # Licensed under GPLv3, see LICENSE for details
 #
 
@@ -8,6 +8,7 @@ import os
 import re
 import sys
 import threading
+import time
 
 try:    # Ugly hack because Python3 decided to rename Queue to queue
     import Queue
@@ -104,7 +105,10 @@ def lookup(domain, recordtype):
         return
 
 def get_wildcard(target):
-    res = lookup("nonexistantdomain" + "." + target, recordtype)
+
+    # Use current unix time as a test subdomain
+    epochtime = str(int(time.time()))
+    res = lookup(epochtime + "." + target, recordtype)
     if res:
         out.good(col.red + "Wildcard" + col.end + " domain found - " + col.brown + res[0].address + col.end)
         return res[0].address
@@ -119,7 +123,7 @@ def get_nameservers(target):
         return
 
 def get_txt(target):
-    out.verbose("Trying TXT records")
+    out.verbose("Getting TXT records")
     try:
         res = lookup(target, "TXT")
         if res:
@@ -130,18 +134,20 @@ def get_txt(target):
         return
 
 def get_mx(target):
-    out.verbose("Trying MX records")
+    out.verbose("Getting MX records")
     try:
         res = lookup(target, "MX")
-        if res:
-            out.good("MX records found")
-        for mx in res:
-            mxsub = re.search("([a-z0-9\.\-]+)\."+target, str(mx), re.IGNORECASE)
-            if mxsub.group(1) and mxsub.group(1) not in wordlist:
-                queue.put(mxsub.group(1) + "." + target)
-            print(mx)
     except:
         return
+    out.good("MX records found, added to target list")
+    for mx in res:
+        print(mx.to_text())
+        mxsub = re.search("([a-z0-9\.\-]+)\."+target, mx.to_text(), re.IGNORECASE)
+        try:
+            if mxsub.group(1) and mxsub.group(1) not in wordlist:
+                queue.put(mxsub.group(1) + "." + target)
+        except AttributeError:
+            pass
 
 def zone_transfer(domain, ns):
     out.verbose("Trying zone transfer against " + str(ns))
@@ -244,3 +250,4 @@ if __name__ == "__main__":
             t.join(1024)       # Timeout needed or threads ignore exceptions
     except KeyboardInterrupt:
         out.fatal("Caught KeyboardInterrupt, quitting...")
+        sys.exit(1)
