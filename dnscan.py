@@ -184,7 +184,7 @@ def setup():
     global target, wordlist, queue, resolver, recordtype
     target = args.domain
     if not args.wordlist:   # Try to use default wordlist if non specified
-        args.wordlist = os.path.dirname(os.path.realpath(__file__)) + "/subdomains.txt"
+        args.wordlist = os.path.join(os.path.dirname(os.path.realpath(__file__)), "subdomains.txt")
     try:
         wordlist = open(args.wordlist).read().splitlines()
     except:
