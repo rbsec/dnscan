@@ -139,6 +139,9 @@ def get_mx(target):
         res = lookup(target, "MX")
     except:
         return
+    # Return if we don't get any MX records back
+    if not res:
+        return
     out.good("MX records found, added to target list")
     for mx in res:
         print(mx.to_text())
