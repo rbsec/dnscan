@@ -21,6 +21,7 @@ dnscan.py -d \<domain\> [OPTIONS]
     -6 --ipv6                                 Scan for IPv6 records (AAAA)
     -z --zonetransfer                         Perform zone transfer and exit
     -r --recursive                            Recursively scan subdomains
+    -o --output                               Output to a text file
     -v --verbose                              Verbose output
     -h --help                                 Display help text
 

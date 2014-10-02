@@ -3,6 +3,7 @@
 # dnscan copyright (C) 2013-2014 rbsec
 # Licensed under GPLv3, see LICENSE for details
 #
+from __future__ import print_function
 
 import os
 import re
@@ -49,6 +50,8 @@ class scanner(threading.Thread):
                         if rdata.address == wildcard:
                             return
                     print(rdata.address + " - " + col.brown + domain + col.end)
+                    if outfile:
+                        print(rdata.address + " - " + domain, file=outfile)
                 if domain != target and args.recurse:    # Don't scan root domain twice
                     add_target(domain)  # Recursively scan subdomains
             except:
@@ -67,19 +70,29 @@ class scanner(threading.Thread):
 class output:
     def status(self, message):
         print(col.blue + "[*] " + col.end + message)
+        if outfile:
+            print("[*] " + message, file=outfile)
 
     def good(self, message):
         print(col.green + "[+] " + col.end + message)
+        if outfile:
+            print("[+] " + message, file=outfile)
 
     def verbose(self, message):
         if args.verbose:
             print(col.brown + "[v] " + col.end + message)
+            if outfile:
+                print("[v] " + message, file=outfile)
 
     def warn(self, message):
         print(col.red + "[-] " + col.end + message)
+        if outfile:
+            print("[-] " + message, file=outfile)
 
     def fatal(self, message):
         print("\n" + col.red + "FATAL: " + message + col.end)
+        if outfile:
+            print("FATAL " + message, file=outfile)
 
 
 class col:
@@ -130,6 +143,8 @@ def get_txt(target):
             out.good("TXT records found")
         for txt in res:
             print(txt)
+            if outfile:
+                print(txt, file=outfile)
     except:
         return
 
@@ -145,6 +160,8 @@ def get_mx(target):
     out.good("MX records found, added to target list")
     for mx in res:
         print(mx.to_text())
+        if outfile:
+            print(mx.to_text(), file=outfile)
         mxsub = re.search("([a-z0-9\.\-]+)\."+target, mx.to_text(), re.IGNORECASE)
         try:
             if mxsub.group(1) and mxsub.group(1) not in wordlist:
@@ -162,6 +179,8 @@ def zone_transfer(domain, ns):
         names.sort()
         for n in names:
             print(zone[n].to_text(n))    # Print raw zone
+            if outfile:
+                print(zone[n].to_text(n), file=outfile)
         sys.exit(0)
     except Exception:
         pass
@@ -178,13 +197,14 @@ def get_args():
     parser.add_argument('-w', '--wordlist', help='Wordlist', dest='wordlist', required=False)
     parser.add_argument('-t', '--threads', help='Number of threads', dest='threads', required=False, type=int, default=8)
     parser.add_argument('-6', '--ipv6', help='Scan for AAAA records', action="store_true", dest='ipv6', required=False, default=False)
-    parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
     parser.add_argument('-z', '--zonetransfer', action="store_true", default=False, help='Only perform zone transfers', dest='zonetransfer', required=False)
     parser.add_argument('-r', '--recursive', action="store_true", default=False, help="Recursively scan subdomains", dest='recurse', required=False)
+    parser.add_argument('-o', '--output', help="Write output to a file", dest='output_filename', required=False)
+    parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
     args = parser.parse_args()
 
 def setup():
-    global target, wordlist, queue, resolver, recordtype
+    global target, wordlist, queue, resolver, recordtype, outfile
     target = args.domain
     if not args.wordlist:   # Try to use default wordlist if non specified
         args.wordlist = os.path.join(os.path.dirname(os.path.realpath(__file__)), "subdomains.txt")
@@ -192,6 +212,15 @@ def setup():
         wordlist = open(args.wordlist).read().splitlines()
     except:
         out.fatal("Could not open wordlist " + args.wordlist)
+        sys.exit(1)
+
+    # Open file handle for output
+    try:
+        outfile = open(args.output_filename, "w")
+    except IndexError:
+        pass
+    except IOError:
+        out.fatal("Could not open output file: " + args.output_filename)
         sys.exit(1)
 
     # Number of threads should be between 1 and 32
@@ -226,7 +255,9 @@ if __name__ == "__main__":
             res = lookup(ns, "A")
             for rdata in res:
                 targetns.append(rdata.address)
-                print rdata.address + " - " + col.brown + ns + col.end
+                print(rdata.address + " - " + col.brown + ns + col.end)
+                if outfile:
+                    print(rdata.address + " - " + ns, file=outfile)
             zone_transfer(target, ns)
     except SystemExit:
         sys.exit(0)
@@ -241,7 +272,7 @@ if __name__ == "__main__":
     get_txt(target)
     get_mx(target)
     wildcard = get_wildcard(target)
-    out.status("Scanning " + target + " for " + col.brown + recordtype + col.end + " records")
+    out.status("Scanning " + target + " for " + recordtype + " records")
     add_target(target)
 
     for i in range(args.threads):
