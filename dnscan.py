@@ -217,8 +217,8 @@ def setup():
     # Open file handle for output
     try:
         outfile = open(args.output_filename, "w")
-    except IndexError:
-        pass
+    except TypeError:
+        outfile = None
     except IOError:
         out.fatal("Could not open output file: " + args.output_filename)
         sys.exit(1)
