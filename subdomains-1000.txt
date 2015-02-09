@@ -678,7 +678,6 @@ resources
 1
 life
 mail6
-MAIL
 transfer
 app1
 confluence
@@ -686,7 +685,7 @@ controlpanel
 secure2
 puppet
 classifieds
-TUNET
+tunet
 edge
 biz
 host3

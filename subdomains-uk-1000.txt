@@ -831,7 +831,7 @@ ew
 www-old
 in
 web03
-DomainDnsZones
+domaindnszones
 mail11
 kb
 member
@@ -897,15 +897,13 @@ mm
 galleries
 mssql8
 2012
-ForestDnsZones
+forestdnszones
 gatekeeper
 gold
 phones
 mxbackup
 sarah
-forestdnszones
 shopping
-domaindnszones
 homer
 crawler
 ticket

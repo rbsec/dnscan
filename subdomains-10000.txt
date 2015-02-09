@@ -678,7 +678,6 @@ resources
 1
 life
 mail6
-MAIL
 transfer
 app1
 confluence
@@ -686,7 +685,7 @@ controlpanel
 secure2
 puppet
 classifieds
-TUNET
+tunet
 edge
 biz
 host3
@@ -2767,7 +2766,6 @@ server02
 itunes
 ical
 nemo
-NS1
 perpustakaan
 dx
 tec
@@ -3004,7 +3002,6 @@ as1
 cma
 www20
 tours
-NS2
 pluton
 projekt
 d6
@@ -3482,7 +3479,6 @@ qa1
 music-hn
 applications
 challenge
-CISCO-CAPWAP-CONTROLLER
 publicapi
 netlab
 asterix
@@ -3505,7 +3501,7 @@ jordan
 lx
 gonghui
 str
-CISCO-LWAPP-CONTROLLER
+cisco-lwapp-controller
 vms
 coffee
 kc
@@ -4517,7 +4513,6 @@ hqc
 industry
 tutorial
 mysites
-AV
 mx12
 metric
 ids2
@@ -4714,7 +4709,6 @@ chrome
 hostel
 eb
 asg
-iPhone
 turizm
 ped
 teach
@@ -4829,7 +4823,6 @@ game1
 vulcan
 wins
 aca
-Autodiscover
 comics
 fisher
 farmerama
@@ -4920,10 +4913,10 @@ rem
 wns1
 tech2
 webportal
-DomainDnsZones
+domaindnszones
 voting
 srm
-ForestDnsZones
+forestdnszones
 nauka
 gap
 cec
@@ -5075,7 +5068,6 @@ mind
 quran
 naruto
 21
-cisco-lwapp-controller
 cdm
 ogloszenia
 xyy
@@ -5110,7 +5102,6 @@ lodz
 connections
 mysql8
 nelson
-FTP
 update1
 mssql4
 nord
@@ -5503,7 +5494,6 @@ input
 uae
 uag
 mxbackup
-forestdnszones
 bestbuy
 ogrenci
 marine
@@ -5742,7 +5732,6 @@ zion
 subaru
 perpus
 polit
-Server
 rain
 gx
 g3
@@ -6551,7 +6540,6 @@ ftpweb
 ftptest
 trunk
 mail21
-domaindnszones
 genetics
 ksm
 cel
@@ -6583,7 +6571,6 @@ cc2
 calcium
 pozycjonowanie
 casting
-IN
 serial
 crash
 zenwsimport
@@ -7035,7 +7022,6 @@ cnet
 keyword
 bme
 web09
-SMTP
 street
 infoweb
 s113
@@ -7384,7 +7370,6 @@ cache3
 vlon
 autodiscovery
 browser
-Mail
 topic
 kam
 gama
