@@ -49,9 +49,15 @@ class scanner(threading.Thread):
                     if wildcard:
                         if rdata.address == wildcard:
                             return
-                    print(rdata.address + " - " + col.brown + domain + col.end)
+                    if args.domain_first:
+                        print(domain + " - " + col.brown + rdata.address + col.end)
+                    else:
+                        print(rdata.address + " - " + col.brown + domain + col.end)
                     if outfile:
-                        print(rdata.address + " - " + domain, file=outfile)
+                        if args.domain_first:
+                            print(domain + " - " + rdata.address, file=outfile)
+                        else:
+                            print(rdata.address + " - " + domain, file=outfile)
                 if domain != target and args.recurse:    # Don't scan root domain twice
                     add_target(domain)  # Recursively scan subdomains
             except:
@@ -200,6 +206,7 @@ def get_args():
     parser.add_argument('-z', '--zonetransfer', action="store_true", default=False, help='Only perform zone transfers', dest='zonetransfer', required=False)
     parser.add_argument('-r', '--recursive', action="store_true", default=False, help="Recursively scan subdomains", dest='recurse', required=False)
     parser.add_argument('-o', '--output', help="Write output to a file", dest='output_filename', required=False)
+    parser.add_argument('-D', '--domain-first', action="store_true", default=False, help='Output domain first, rather than IP address', dest='domain_first', required=False)
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
     args = parser.parse_args()
 
@@ -284,4 +291,8 @@ if __name__ == "__main__":
             t.join(1024)       # Timeout needed or threads ignore exceptions
     except KeyboardInterrupt:
         out.fatal("Caught KeyboardInterrupt, quitting...")
+        if outfile:
+            outfile.close()
         sys.exit(1)
+    if outfile:
+        outfile.close()
