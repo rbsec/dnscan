@@ -135,6 +135,19 @@ def get_nameservers(target):
     except:
         return
 
+def get_v6(target):
+    out.verbose("Getting IPv6 (AAAA) records")
+    try:
+        res = lookup(target, "AAAA")
+        if res:
+            out.good("IPv6 (AAAA) records found. Try running dnscan with the "+ col.green + "-6 " + col.end + "option.")
+        for v6 in res:
+            print(v6)
+            if outfile:
+                print(v6, file=outfile)
+    except:
+        return
+
 def get_txt(target):
     out.verbose("Getting TXT records")
     try:
@@ -269,6 +282,7 @@ if __name__ == "__main__":
     if args.zonetransfer:
         sys.exit(0)
 
+    get_v6(target)
     get_txt(target)
     get_mx(target)
     wildcard = get_wildcard(target)
