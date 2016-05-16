@@ -551,8 +551,10 @@ register
 relay
 remote
 remote2
+repo
 report
 reports
+repos
 research
 resources
 restricted
@@ -653,8 +655,8 @@ test3
 testing
 testsite
 testweb
-tftp
 tfs
+tftp
 thumbs
 ticket
 tickets
