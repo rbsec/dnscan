@@ -148,7 +148,7 @@ def get_v6(target):
         if res:
             out.good("IPv6 (AAAA) records found. Try running dnscan with the "+ col.green + "-6 " + col.end + "option.")
         for v6 in res:
-            print(v6)
+            print(str(v6) + "\n")
             if outfile:
                 print(v6, file=outfile)
     except:
@@ -164,6 +164,7 @@ def get_txt(target):
             print(txt)
             if outfile:
                 print(txt, file=outfile)
+        print("")
     except:
         return
 
@@ -187,6 +188,7 @@ def get_mx(target):
                 queue.put(mxsub.group(1) + "." + target)
         except AttributeError:
             pass
+    print("")
 
 def zone_transfer(domain, ns):
     out.verbose("Trying zone transfer against " + str(ns))
@@ -285,7 +287,7 @@ if __name__ == "__main__":
         out.warn("Getting nameservers failed")
 #    resolver.nameservers = targetns     # Use target's NS servers for lokups
 # Missing results using domain's NS - removed for now
-    out.warn("Zone transfer failed")
+    out.warn("Zone transfer failed\n")
     if args.zonetransfer:
         sys.exit(0)
 
