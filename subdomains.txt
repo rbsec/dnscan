@@ -172,6 +172,8 @@ email
 en
 eng
 english
+enterpriseenrollment
+enterpriseregistration
 erp
 es
 event
@@ -598,6 +600,7 @@ site
 siteadmin
 sitebuilder
 sites
+skype
 sms
 smtp
 smtp1
@@ -711,6 +714,7 @@ vps2
 w
 w3
 wap
+wc
 web
 web0
 web01

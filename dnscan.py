@@ -135,7 +135,9 @@ def get_wildcard(target):
 
     # Use current unix time as a test subdomain
     epochtime = str(int(time.time()))
-    res = lookup(epochtime + "." + target, recordtype)
+    # Prepend a letter to work around incompetent companies like CableOne
+    # and their stupid attempts at DNS hijacking
+    res = lookup("a" + epochtime + "." + target, recordtype)
     if res:
         out.good(col.red + "Wildcard" + col.end + " domain found - " + col.brown + res[0].address + col.end)
         return res[0].address
