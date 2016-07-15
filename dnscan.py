@@ -45,6 +45,14 @@ class scanner(threading.Thread):
                     sys.stdout.write(domain + "                              \r")
                     sys.stdout.flush()
                 res = lookup(domain, recordtype)
+                if args.tld and res:
+                    nameservers = sorted(list(res))
+                    ns0 = str(nameservers[0])[:-1]  # First nameserver
+                    print(domain + " - " + col.brown + ns0 + col.end)
+                if args.tld:
+                    if res:
+                        print(domain + " - " + res)
+                    return
                 for rdata in res:
                     if wildcard:
                         if rdata.address == wildcard:
@@ -210,6 +218,10 @@ def add_target(domain):
     for word in wordlist:
         queue.put(word + "." + domain)
 
+def add_tlds(domain):
+    for tld in wordlist:
+        queue.put(domain + "." + tld)
+
 def get_args():
     global args
     
@@ -220,6 +232,7 @@ def get_args():
     parser.add_argument('-6', '--ipv6', help='Scan for AAAA records', action="store_true", dest='ipv6', required=False, default=False)
     parser.add_argument('-z', '--zonetransfer', action="store_true", default=False, help='Only perform zone transfers', dest='zonetransfer', required=False)
     parser.add_argument('-r', '--recursive', action="store_true", default=False, help="Recursively scan subdomains", dest='recurse', required=False)
+    parser.add_argument('-T', '--tld', action="store_true", default=False, help="Scan for TLDs", dest='tld', required=False)
     parser.add_argument('-o', '--output', help="Write output to a file", dest='output_filename', required=False)
     parser.add_argument('-D', '--domain-first', action="store_true", default=False, help='Output domain first, rather than IP address', dest='domain_first', required=False)
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
@@ -228,8 +241,11 @@ def get_args():
 def setup():
     global target, wordlist, queue, resolver, recordtype, outfile
     target = args.domain
-    if not args.wordlist:   # Try to use default wordlist if non specified
-        args.wordlist = os.path.join(os.path.dirname(os.path.realpath(__file__)), "subdomains.txt")
+    if args.tld:
+        args.wordlist = os.path.join(os.path.dirname(os.path.realpath(__file__)), "tlds.txt")
+    else:
+        if not args.wordlist:   # Try to use default wordlist if non specified
+            args.wordlist = os.path.join(os.path.dirname(os.path.realpath(__file__)), "subdomains.txt")
     try:
         wordlist = open(args.wordlist).read().splitlines()
     except:
@@ -257,6 +273,8 @@ def setup():
     # Record type
     if args.ipv6:
         recordtype = 'AAAA'
+    elif args.tld:
+        recordtype = 'NS'
     else:
         recordtype = 'A'
 
@@ -266,37 +284,41 @@ if __name__ == "__main__":
     out = output()
     get_args()
     setup()
-    queue.put(target)   # Add actual domain as well as subdomains
+    if args.tld:
+        out.good("TLD Scan")
+        add_tlds(target)
+    else:
+        queue.put(target)   # Add actual domain as well as subdomains
 
-    nameservers = get_nameservers(target)
-    out.good("Getting nameservers")
-    targetns = []       # NS servers for target
-    try:    # Subdomains often don't have NS recoards..
-        for ns in nameservers:
-            ns = str(ns)[:-1]   # Removed trailing dot
-            res = lookup(ns, "A")
-            for rdata in res:
-                targetns.append(rdata.address)
-                print(rdata.address + " - " + col.brown + ns + col.end)
-                if outfile:
-                    print(rdata.address + " - " + ns, file=outfile)
-            zone_transfer(target, ns)
-    except SystemExit:
-        sys.exit(0)
-    except:
-        out.warn("Getting nameservers failed")
+        nameservers = get_nameservers(target)
+        out.good("Getting nameservers")
+        targetns = []       # NS servers for target
+        try:    # Subdomains often don't have NS recoards..
+            for ns in nameservers:
+                ns = str(ns)[:-1]   # Removed trailing dot
+                res = lookup(ns, "A")
+                for rdata in res:
+                    targetns.append(rdata.address)
+                    print(rdata.address + " - " + col.brown + ns + col.end)
+                    if outfile:
+                        print(rdata.address + " - " + ns, file=outfile)
+                zone_transfer(target, ns)
+        except SystemExit:
+            sys.exit(0)
+        except:
+            out.warn("Getting nameservers failed")
 #    resolver.nameservers = targetns     # Use target's NS servers for lokups
 # Missing results using domain's NS - removed for now
-    out.warn("Zone transfer failed\n")
-    if args.zonetransfer:
-        sys.exit(0)
+        out.warn("Zone transfer failed\n")
+        if args.zonetransfer:
+            sys.exit(0)
 
-    get_v6(target)
-    get_txt(target)
-    get_mx(target)
-    wildcard = get_wildcard(target)
-    out.status("Scanning " + target + " for " + recordtype + " records")
-    add_target(target)
+        get_v6(target)
+        get_txt(target)
+        get_mx(target)
+        wildcard = get_wildcard(target)
+        out.status("Scanning " + target + " for " + recordtype + " records")
+        add_target(target)
 
     for i in range(args.threads):
         t = scanner(queue)
