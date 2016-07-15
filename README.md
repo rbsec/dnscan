@@ -38,3 +38,10 @@ The **subdomain-uk-500.txt** and **subdomain-uk-1000.txt** lists are created usi
 The final (and default) wordlist (**subdomains.txt**) is based on the top 500 subdomains by popularity and the top 500 UK subdomains, but has had a number of manual additions made based on domains identified during testing.
 
 This list is sorted alphabetically and currently contains approximately **770** entries.
+
+
+TLD Scanning
+------------
+The -T (--tld) option can be used to scan for all of the TLDs a specific domain name exists in. By default it will use hte **tlds.txt** list, which contains all of the TLDs listed by IANA (including new TLDs). You can also specify a custom wordlist with -w. The **suffixes.txt** file included is a cut-down version of the public suffix list, so will include most of the second level domains (such as co.uk).
+
+Note that when you use this option, you should only specify the base of the domain name ("github", not "github.com").
