@@ -243,7 +243,7 @@ def get_args():
 def setup():
     global target, wordlist, queue, resolver, recordtype, outfile
     target = args.domain
-    if args.tld:
+    if args.tld and not args.wordlist:
         args.wordlist = os.path.join(os.path.dirname(os.path.realpath(__file__)), "tlds.txt")
     else:
         if not args.wordlist:   # Try to use default wordlist if non specified
