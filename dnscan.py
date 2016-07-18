@@ -287,6 +287,8 @@ if __name__ == "__main__":
     get_args()
     setup()
     if args.tld:
+        if "." in target:
+            out.warn("Warning: TLD scanning works best with just the domain root")
         out.good("TLD Scan")
         add_tlds(target)
     else:
