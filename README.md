@@ -42,6 +42,6 @@ This list is sorted alphabetically and currently contains approximately **770** 
 
 TLD Scanning
 ------------
-The -T (--tld) option can be used to scan for all of the TLDs a specific domain name exists in. By default it will use hte **tlds.txt** list, which contains all of the TLDs listed by IANA (including new TLDs). You can also specify a custom wordlist with -w. The **suffixes.txt** file included is a cut-down version of the public suffix list, so will include most of the second level domains (such as co.uk).
+The -T (--tld) option can be used to scan for all of the TLDs a specific domain name exists in. By default it will use the **tlds.txt** list, which contains all of the TLDs listed by IANA (including new TLDs). You can also specify a custom wordlist with -w. The **suffixes.txt** file included is a cut-down version of the public suffix list, so will include most of the second level domains (such as co.uk).
 
 Note that when you use this option, you should only specify the base of the domain name ("github", not "github.com").
