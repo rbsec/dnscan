@@ -2306,12 +2306,7 @@ publ.pt
 com.pt
 nome.pt
 pw
-co.pw
 ne.pw
-or.pw
-ed.pw
-go.pw
-belau.pw
 py
 com.py
 coop.py
