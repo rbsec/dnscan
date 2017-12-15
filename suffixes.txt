@@ -4235,8 +4235,6 @@ co.nl
 co.no
 realm.cz
 cupcake.is
-cyon.link
-cyon.site
 biz.dk
 co.dk
 firm.dk
