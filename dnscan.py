@@ -228,7 +228,9 @@ def get_args():
     global args
     
     parser = argparse.ArgumentParser('dnscan.py', formatter_class=lambda prog:argparse.HelpFormatter(prog,max_help_position=40))
-    parser.add_argument('-d', '--domain', help='Target domain', dest='domain', required=True)
+    target = parser.add_mutually_exclusive_group(required=True) # Allow a user to specify a list of target domains
+    target.add_argument('-d', '--domain', help='Target domain', dest='domain', required=False)
+    target.add_argument('-l', '--list', help='File containing list of target domains', dest='domain_list', required=False)
     parser.add_argument('-w', '--wordlist', help='Wordlist', dest='wordlist', required=False)
     parser.add_argument('-t', '--threads', help='Number of threads', dest='threads', required=False, type=int, default=8)
     parser.add_argument('-6', '--ipv6', help='Scan for AAAA records', action="store_true", dest='ipv6', required=False, default=False)
@@ -241,8 +243,9 @@ def get_args():
     args = parser.parse_args()
 
 def setup():
-    global target, wordlist, queue, resolver, recordtype, outfile
-    target = args.domain
+    global targets, wordlist, queue, resolver, recordtype, outfile
+    if args.domain:
+        targets = [args.domain]
     if args.tld and not args.wordlist:
         args.wordlist = os.path.join(os.path.dirname(os.path.realpath(__file__)), "tlds.txt")
     else:
@@ -286,55 +289,70 @@ if __name__ == "__main__":
     out = output()
     get_args()
     setup()
-    if args.tld:
-        if "." in target:
-            out.warn("Warning: TLD scanning works best with just the domain root")
-        out.good("TLD Scan")
-        add_tlds(target)
-    else:
-        queue.put(target)   # Add actual domain as well as subdomains
+    if args.domain_list:
+        out.verbose("Domain list provided, will parse {} for domains.".format(args.domain_list))
+        if not os.path.isfile(args.domain_list):
+            out.fatal("Domain list {} doesn't exist!".format(args.domain_list))
+            sys.exit(1)
+        with open(args.domain_list, 'r') as domain_list:
+            try:
+                targets = list(filter(bool, domain_list.read().split('\n')))
+            except Exception as e:
+                out.fatal("Couldn't read {}, {}".format(args.domain_list, e))
+                sys.exit(1)
+    for subtarget in targets:
+        global target
+        target = subtarget
+        out.status("Processing domain {}".format(target))
+        if args.tld:
+            if "." in target:
+                out.warn("Warning: TLD scanning works best with just the domain root")
+            out.good("TLD Scan")
+            add_tlds(target)
+        else:
+            queue.put(target)   # Add actual domain as well as subdomains
 
-        nameservers = get_nameservers(target)
-        out.good("Getting nameservers")
-        targetns = []       # NS servers for target
-        try:    # Subdomains often don't have NS recoards..
-            for ns in nameservers:
-                ns = str(ns)[:-1]   # Removed trailing dot
-                res = lookup(ns, "A")
-                for rdata in res:
-                    targetns.append(rdata.address)
-                    print(rdata.address + " - " + col.brown + ns + col.end)
-                    if outfile:
-                        print(rdata.address + " - " + ns, file=outfile)
-                zone_transfer(target, ns)
-        except SystemExit:
-            sys.exit(0)
-        except:
-            out.warn("Getting nameservers failed")
-#    resolver.nameservers = targetns     # Use target's NS servers for lokups
-# Missing results using domain's NS - removed for now
-        out.warn("Zone transfer failed\n")
-        if args.zonetransfer:
-            sys.exit(0)
+            nameservers = get_nameservers(target)
+            out.good("Getting nameservers")
+            targetns = []       # NS servers for target
+            try:    # Subdomains often don't have NS recoards..
+                for ns in nameservers:
+                    ns = str(ns)[:-1]   # Removed trailing dot
+                    res = lookup(ns, "A")
+                    for rdata in res:
+                        targetns.append(rdata.address)
+                        print(rdata.address + " - " + col.brown + ns + col.end)
+                        if outfile:
+                            print(rdata.address + " - " + ns, file=outfile)
+                    zone_transfer(target, ns)
+            except SystemExit:
+                sys.exit(0)
+            except:
+                out.warn("Getting nameservers failed")
+    #    resolver.nameservers = targetns     # Use target's NS servers for lokups
+    # Missing results using domain's NS - removed for now
+            out.warn("Zone transfer failed\n")
+            if args.zonetransfer:
+                sys.exit(0)
 
-        get_v6(target)
-        get_txt(target)
-        get_mx(target)
-        wildcard = get_wildcard(target)
-        out.status("Scanning " + target + " for " + recordtype + " records")
-        add_target(target)
+            get_v6(target)
+            get_txt(target)
+            get_mx(target)
+            wildcard = get_wildcard(target)
+            out.status("Scanning " + target + " for " + recordtype + " records")
+            add_target(target)
 
-    for i in range(args.threads):
-        t = scanner(queue)
-        t.setDaemon(True)
-        t.start()
-    try:
         for i in range(args.threads):
-            t.join(1024)       # Timeout needed or threads ignore exceptions
-    except KeyboardInterrupt:
-        out.fatal("Caught KeyboardInterrupt, quitting...")
-        if outfile:
-            outfile.close()
-        sys.exit(1)
+            t = scanner(queue)
+            t.setDaemon(True)
+            t.start()
+        try:
+            for i in range(args.threads):
+                t.join(1024)       # Timeout needed or threads ignore exceptions
+        except KeyboardInterrupt:
+            out.fatal("Caught KeyboardInterrupt, quitting...")
+            if outfile:
+                outfile.close()
+            sys.exit(1)
     if outfile:
         outfile.close()
