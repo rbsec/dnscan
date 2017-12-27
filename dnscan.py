@@ -354,5 +354,6 @@ if __name__ == "__main__":
             if outfile:
                 outfile.close()
             sys.exit(1)
+        print("\n")
     if outfile:
         outfile.close()
