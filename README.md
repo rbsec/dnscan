@@ -23,7 +23,8 @@ dnscan.py (-d \<domain\> | -l \<list\>) [OPTIONS]
     -z --zonetransfer                         Perform zone transfer and exit
     -r --recursive                            Recursively scan subdomains
     -T --tld                                  Scan for the domain in all TLDs
-    -o --output                               Output to a text file
+    -o --output <filename>                    Output to a text file
+    -i --output-ips <filename>                Output discovered IP addresses to a text file
     -v --verbose                              Verbose output
     -h --help                                 Display help text
 

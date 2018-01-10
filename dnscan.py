@@ -16,6 +16,11 @@ try:    # Ugly hack because Python3 decided to rename Queue to queue
 except ImportError:
     import queue as Queue
 
+try:    # Python2 and Python3 have different IP address libraries
+        from ipaddress import ip_address as ipaddr
+except ImportError:
+        from  netaddr import IPaddress as ipaddr
+
 try:
     import argparse
 except:
@@ -67,7 +72,7 @@ class scanner(threading.Thread):
                             print(domain + " - " + address, file=outfile)
                         else:
                             print(address + " - " + domain, file=outfile)
-                    addresses.add(address)
+                    addresses.add(ipaddr(unicode(address)))
                 if domain != target and args.recurse:    # Don't scan root domain twice
                     add_target(domain)  # Recursively scan subdomains
             except:
@@ -241,7 +246,7 @@ def get_args():
     parser.add_argument('-r', '--recursive', action="store_true", default=False, help="Recursively scan subdomains", dest='recurse', required=False)
     parser.add_argument('-T', '--tld', action="store_true", default=False, help="Scan for TLDs", dest='tld', required=False)
     parser.add_argument('-o', '--output', help="Write output to a file", dest='output_filename', required=False)
-    parser.add_argument(      '--output_ips',   help="Write found IP addresses to a file", dest='output_ips', required=False)
+    parser.add_argument('-i', '--output-ips',   help="Write discovered IP addresses to a file", dest='output_ips', required=False)
     parser.add_argument('-D', '--domain-first', action="store_true", default=False, help='Output domain first, rather than IP address', dest='domain_first', required=False)
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
     args = parser.parse_args()
@@ -349,7 +354,7 @@ if __name__ == "__main__":
             get_mx(target)
             wildcard = get_wildcard(target)
             if wildcard:
-                addresses.add(wildcard)
+                addresses.add(ipaddr(unicode(wildcard)))
             out.status("Scanning " + target + " for " + recordtype + " records")
             add_target(target)
 
@@ -367,7 +372,7 @@ if __name__ == "__main__":
             sys.exit(1)
         print("\n")
         if outfile_ips:
-            for address in addresses:
+            for address in sorted(addresses):
                 print(address, file=outfile_ips)
     if outfile:
         outfile.close()
