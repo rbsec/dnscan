@@ -39,7 +39,7 @@ class scanner(threading.Thread):
         self.queue = queue
 
     def get_name(self, domain):
-            global wildcard
+            global wildcard, addresses
             try:
                 if sys.stdout.isatty():     # Don't spam output if redirected
                     sys.stdout.write(domain + "                              \r")
@@ -54,18 +54,20 @@ class scanner(threading.Thread):
                         print(domain + " - " + res)
                     return
                 for rdata in res:
+                    address = rdata.address
                     if wildcard:
-                        if rdata.address == wildcard:
+                        if address == wildcard:
                             return
                     if args.domain_first:
-                        print(domain + " - " + col.brown + rdata.address + col.end)
+                        print(domain + " - " + col.brown + address + col.end)
                     else:
-                        print(rdata.address + " - " + col.brown + domain + col.end)
+                        print(address + " - " + col.brown + domain + col.end)
                     if outfile:
                         if args.domain_first:
-                            print(domain + " - " + rdata.address, file=outfile)
+                            print(domain + " - " + address, file=outfile)
                         else:
-                            print(rdata.address + " - " + domain, file=outfile)
+                            print(address + " - " + domain, file=outfile)
+                    addresses.add(address)
                 if domain != target and args.recurse:    # Don't scan root domain twice
                     add_target(domain)  # Recursively scan subdomains
             except:
@@ -139,8 +141,9 @@ def get_wildcard(target):
     # and their stupid attempts at DNS hijacking
     res = lookup("a" + epochtime + "." + target, recordtype)
     if res:
-        out.good(col.red + "Wildcard" + col.end + " domain found - " + col.brown + res[0].address + col.end)
-        return res[0].address
+        address = res[0].address
+        out.good(col.red + "Wildcard" + col.end + " domain found - " + col.brown + address + col.end)
+        return address
     else:
         out.verbose("No wildcard domain found")
 
@@ -238,12 +241,13 @@ def get_args():
     parser.add_argument('-r', '--recursive', action="store_true", default=False, help="Recursively scan subdomains", dest='recurse', required=False)
     parser.add_argument('-T', '--tld', action="store_true", default=False, help="Scan for TLDs", dest='tld', required=False)
     parser.add_argument('-o', '--output', help="Write output to a file", dest='output_filename', required=False)
+    parser.add_argument(      '--output_ips',   help="Write found IP addresses to a file", dest='output_ips', required=False)
     parser.add_argument('-D', '--domain-first', action="store_true", default=False, help='Output domain first, rather than IP address', dest='domain_first', required=False)
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
     args = parser.parse_args()
 
 def setup():
-    global targets, wordlist, queue, resolver, recordtype, outfile
+    global targets, wordlist, queue, resolver, recordtype, outfile, outfile_ips
     if args.domain:
         targets = [args.domain]
     if args.tld and not args.wordlist:
@@ -265,6 +269,10 @@ def setup():
     except IOError:
         out.fatal("Could not open output file: " + args.output_filename)
         sys.exit(1)
+    if args.output_ips:
+        outfile_ips = open(args.output_ips, "w")
+    else:
+        outfile_ips = None
 
     # Number of threads should be between 1 and 32
     if args.threads < 1:
@@ -285,7 +293,8 @@ def setup():
 
 
 if __name__ == "__main__":
-    global wildcard
+    global wildcard, addresses, outfile_ips
+    addresses = set([])
     out = output()
     get_args()
     setup()
@@ -339,6 +348,8 @@ if __name__ == "__main__":
             get_txt(target)
             get_mx(target)
             wildcard = get_wildcard(target)
+            if wildcard:
+                addresses.add(wildcard)
             out.status("Scanning " + target + " for " + recordtype + " records")
             add_target(target)
 
@@ -355,5 +366,10 @@ if __name__ == "__main__":
                 outfile.close()
             sys.exit(1)
         print("\n")
+        if outfile_ips:
+            for address in addresses:
+                print(address, file=outfile_ips)
     if outfile:
         outfile.close()
+    if outfile_ips:
+        outfile_ips.close()
