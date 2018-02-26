@@ -370,7 +370,7 @@ if __name__ == "__main__":
             if outfile:
                 outfile.close()
             sys.exit(1)
-        print("\n")
+        print("                                        ")
         if outfile_ips:
             for address in sorted(addresses):
                 print(address, file=outfile_ips)
