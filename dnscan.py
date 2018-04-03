@@ -72,7 +72,11 @@ class scanner(threading.Thread):
                             print(domain + " - " + address, file=outfile)
                         else:
                             print(address + " - " + domain, file=outfile)
-                    addresses.add(ipaddr(unicode(address)))
+                    try:
+                        addresses.add(ipaddr(unicode(address)))
+                    except NameError:
+                        addresses.add(ipaddr(str(address)))
+
                 if domain != target and args.recurse:    # Don't scan root domain twice
                     add_target(domain)  # Recursively scan subdomains
             except:
@@ -354,7 +358,10 @@ if __name__ == "__main__":
             get_mx(target)
             wildcard = get_wildcard(target)
             if wildcard:
-                addresses.add(ipaddr(unicode(wildcard)))
+                try:
+                    addresses.add(ipaddr(unicode(wildcard)))
+                except NameError:
+                    addresses.add(ipaddr(str(wildcard)))
             out.status("Scanning " + target + " for " + recordtype + " records")
             add_target(target)
 
