@@ -121,7 +121,7 @@ class output:
 
 
 class col:
-    if sys.stdout.isatty():
+    if sys.stdout.isatty() and platform.system() != "Windows":
         green = '\033[32m'
         blue = '\033[94m'
         red = '\033[31m'
