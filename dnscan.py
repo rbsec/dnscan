@@ -20,7 +20,7 @@ except ImportError:
 try:    # Python2 and Python3 have different IP address libraries
         from ipaddress import ip_address as ipaddr
 except ImportError:
-        from  netaddr import IPaddress as ipaddr
+        from  netaddr import IPAddress as ipaddr
 
 try:
     import argparse
