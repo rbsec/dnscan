@@ -326,6 +326,10 @@ if __name__ == "__main__":
         global target
         target = subtarget
         out.status("Processing domain {}".format(target))
+        if args.resolver:
+            out.status("Using specified resolver {}".format(args.resolver))
+        else:
+            out.status("Using system resolvers {}".format(resolver.nameservers))
         if args.tld:
             if "." in target:
                 out.warn("Warning: TLD scanning works best with just the domain root")
