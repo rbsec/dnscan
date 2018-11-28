@@ -293,6 +293,7 @@ def setup():
     queue = Queue.Queue()
     resolver = dns.resolver.Resolver()
     resolver.timeout = 1
+    resolver.lifetime = 1
     if args.resolver:
         resolver.nameservers = [ args.resolver ]
 
