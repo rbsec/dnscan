@@ -311,6 +311,14 @@ if __name__ == "__main__":
     out = output()
     get_args()
     setup()
+    try:
+        resolver.query('.', 'NS')
+    except dns.resolver.NoAnswer:
+        pass
+    except dns.exception.Timeout:
+        out.fatal("No valid DNS resolver. Set a custom resolver with -R <resolver>\n")
+        sys.exit(1)
+
     if args.domain_list:
         out.verbose("Domain list provided, will parse {} for domains.".format(args.domain_list))
         if not os.path.isfile(args.domain_list):
