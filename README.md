@@ -22,6 +22,7 @@ dnscan.py (-d \<domain\> | -l \<list\>) [OPTIONS]
     -6 --ipv6                                 Scan for IPv6 records (AAAA)
     -z --zonetransfer                         Perform zone transfer and exit
     -r --recursive                            Recursively scan subdomains
+    -R --resolver <resolver>                  Use the specified resolver instead of the system default
     -T --tld                                  Scan for the domain in all TLDs
     -o --output <filename>                    Output to a text file
     -i --output-ips <filename>                Output discovered IP addresses to a text file
