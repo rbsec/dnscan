@@ -20,7 +20,11 @@ except ImportError:
 try:    # Python2 and Python3 have different IP address libraries
         from ipaddress import ip_address as ipaddr
 except ImportError:
+    try:
         from  netaddr import IPAddress as ipaddr
+    except ImportError:
+        print("FATAL: Module netaddr missing (python-netaddr or python3-netaddr)")
+        sys.exit(1)
 
 try:
     import argparse
