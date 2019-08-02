@@ -264,6 +264,7 @@ def get_args():
     parser.add_argument('-i', '--output-ips',   help="Write discovered IP addresses to a file", dest='output_ips', required=False)
     parser.add_argument('-D', '--domain-first', action="store_true", default=False, help='Output domain first, rather than IP address', dest='domain_first', required=False)
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
+    parser.add_argument('-n', '--nocheck', action="store_true", default=False, help='Don\'t check nameservers before scanning', dest='nocheck', required=False)
     args = parser.parse_args()
 
 def setup():
@@ -321,13 +322,15 @@ if __name__ == "__main__":
     out = output()
     get_args()
     setup()
-    try:
-        resolver.query('.', 'NS')
-    except dns.resolver.NoAnswer:
-        pass
-    except dns.exception.Timeout:
-        out.fatal("No valid DNS resolver. Set a custom resolver with -R <resolver>\n")
-        sys.exit(1)
+    if args.nocheck == False:
+        try:
+            resolver.query('.', 'NS')
+        except dns.resolver.NoAnswer:
+            pass
+        except dns.exception.Timeout:
+            out.fatal("No valid DNS resolver. Set a custom resolver with -R <resolver>")
+            out.fatal("Override with -n --nocheck\n")
+            sys.exit(1)
 
     if args.domain_list:
         out.verbose("Domain list provided, will parse {} for domains.".format(args.domain_list))
