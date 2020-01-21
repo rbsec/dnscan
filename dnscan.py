@@ -200,6 +200,20 @@ def get_txt(target):
     except:
         return
 
+def get_dmarc(target):
+    out.verbose("Getting DMARC records")
+    try:
+        res = lookup("_dmarc." + target, "TXT")
+        if res:
+            out.good("DMARC records found")
+        for dmarc in res:
+            print(dmarc)
+            if outfile:
+                print(dmarc, file=outfile)
+        print("")
+    except:
+        return
+
 def get_mx(target):
     out.verbose("Getting MX records")
     try:
@@ -384,6 +398,7 @@ if __name__ == "__main__":
 
             get_v6(target)
             get_txt(target)
+            get_dmarc(target)
             get_mx(target)
             wildcard = get_wildcard(target)
             if wildcard:
