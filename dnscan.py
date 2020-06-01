@@ -84,7 +84,10 @@ class scanner(threading.Thread):
                         addresses.add(ipaddr(str(address)))
 
                 if domain != target and args.recurse:    # Don't scan root domain twice
-                    add_target(domain)  # Recursively scan subdomains
+                    if '%%' in domain:
+                        add_target_injection(domain)
+                    else:
+                        add_target(domain)  # Recursively scan subdomains
             except:
                 pass
 
@@ -200,20 +203,6 @@ def get_txt(target):
     except:
         return
 
-def get_dmarc(target):
-    out.verbose("Getting DMARC records")
-    try:
-        res = lookup("_dmarc." + target, "TXT")
-        if res:
-            out.good("DMARC records found")
-        for dmarc in res:
-            print(dmarc)
-            if outfile:
-                print(dmarc, file=outfile)
-        print("")
-    except:
-        return
-
 def get_mx(target):
     out.verbose("Getting MX records")
     try:
@@ -255,6 +244,10 @@ def zone_transfer(domain, ns):
 def add_target(domain):
     for word in wordlist:
         queue.put(word + "." + domain)
+
+def add_target_injection(domain):
+    for word in wordlist:
+        queue.put(domain.replace(r'%%',word))
 
 def add_tlds(domain):
     for tld in wordlist:
@@ -398,7 +391,6 @@ if __name__ == "__main__":
 
             get_v6(target)
             get_txt(target)
-            get_dmarc(target)
             get_mx(target)
             wildcard = get_wildcard(target)
             if wildcard:
@@ -408,7 +400,10 @@ if __name__ == "__main__":
                     except NameError:
                         addresses.add(ipaddr(str(wildcard_ip)))
             out.status("Scanning " + target + " for " + recordtype + " records")
-            add_target(target)
+            if '%%' in target:
+                add_target_injection(target)
+            else:
+                add_target(target)
 
         for i in range(args.threads):
             t = scanner(queue)
