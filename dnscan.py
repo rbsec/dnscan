@@ -253,8 +253,12 @@ def zone_transfer(domain, ns):
         pass
 
 def add_target(domain):
-    for word in wordlist:
-        queue.put(word + "." + domain)
+    if '%%' in domain:
+        for word in wordlist:
+            queue.put(domain.replace(r'%%', word))
+    else:
+        for word in wordlist:
+            queue.put(word + "." + domain)
 
 def add_tlds(domain):
     for tld in wordlist:
@@ -263,7 +267,8 @@ def add_tlds(domain):
 def get_args():
     global args
     
-    parser = argparse.ArgumentParser('dnscan.py', formatter_class=lambda prog:argparse.HelpFormatter(prog,max_help_position=40))
+    parser = argparse.ArgumentParser('dnscan.py', formatter_class=lambda prog:argparse.HelpFormatter(prog,max_help_position=40),
+            epilog="Specify a custom insertion point with %% in the domain name, such as: dnscan.py -d dev-%%.example.org")
     target = parser.add_mutually_exclusive_group(required=True) # Allow a user to specify a list of target domains
     target.add_argument('-d', '--domain', help='Target domain', dest='domain', required=False)
     target.add_argument('-l', '--list', help='File containing list of target domains', dest='domain_list', required=False)
@@ -365,7 +370,7 @@ if __name__ == "__main__":
             out.status("Using specified resolver {}".format(args.resolver))
         else:
             out.status("Using system resolvers {}".format(resolver.nameservers))
-        if args.tld:
+        if args.tld and not '%%' in args.domain:
             if "." in target:
                 out.warn("Warning: TLD scanning works best with just the domain root")
             out.good("TLD Scan")
@@ -373,33 +378,35 @@ if __name__ == "__main__":
         else:
             queue.put(target)   # Add actual domain as well as subdomains
 
-            nameservers = get_nameservers(target)
-            out.good("Getting nameservers")
-            targetns = []       # NS servers for target
-            try:    # Subdomains often don't have NS recoards..
-                for ns in nameservers:
-                    ns = str(ns)[:-1]   # Removed trailing dot
-                    res = lookup(ns, "A")
-                    for rdata in res:
-                        targetns.append(rdata.address)
-                        print(rdata.address + " - " + col.brown + ns + col.end)
-                        if outfile:
-                            print(rdata.address + " - " + ns, file=outfile)
-                    zone_transfer(target, ns)
-            except SystemExit:
-                sys.exit(0)
-            except:
-                out.warn("Getting nameservers failed")
-    #    resolver.nameservers = targetns     # Use target's NS servers for lokups
-    # Missing results using domain's NS - removed for now
-            out.warn("Zone transfer failed\n")
-            if args.zonetransfer:
-                sys.exit(0)
+            # These checks will all fail if we have a custom injection point, so skip them
+            if not '%%' in args.domain:
+                nameservers = get_nameservers(target)
+                out.good("Getting nameservers")
+                targetns = []       # NS servers for target
+                try:    # Subdomains often don't have NS recoards..
+                    for ns in nameservers:
+                        ns = str(ns)[:-1]   # Removed trailing dot
+                        res = lookup(ns, "A")
+                        for rdata in res:
+                            targetns.append(rdata.address)
+                            print(rdata.address + " - " + col.brown + ns + col.end)
+                            if outfile:
+                                print(rdata.address + " - " + ns, file=outfile)
+                        zone_transfer(target, ns)
+                except SystemExit:
+                    sys.exit(0)
+                except:
+                    out.warn("Getting nameservers failed")
+        #    resolver.nameservers = targetns     # Use target's NS servers for lokups
+        # Missing results using domain's NS - removed for now
+                out.warn("Zone transfer failed\n")
+                if args.zonetransfer:
+                    sys.exit(0)
 
-            get_v6(target)
-            get_txt(target)
-            get_dmarc(target)
-            get_mx(target)
+                get_v6(target)
+                get_txt(target)
+                get_dmarc(target)
+                get_mx(target)
             wildcard = get_wildcard(target)
             if wildcard:
                 for wildcard_ip in wildcard:

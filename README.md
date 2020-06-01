@@ -29,6 +29,12 @@ dnscan.py (-d \<domain\> | -l \<list\>) [OPTIONS]
     -v --verbose                              Verbose output
     -h --help                                 Display help text
 
+Custom insertion points can be specified by adding `%%` in the domain name, such as:
+
+```
+$ dnscan.py -d dev-%%.example.org
+```
+
 Wordlists
 ---------
 
