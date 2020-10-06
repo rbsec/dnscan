@@ -23,7 +23,7 @@ except ImportError:
     try:
         from  netaddr import IPAddress as ipaddr
     except ImportError:
-        print("FATAL: Module netaddr missing (python-netaddr or python3-netaddr)")
+        print("FATAL: Module ipaddress(py2) or netaddr(py3) missing (python-ipaddress, python-netaddr or python3-netaddr)")
         sys.exit(1)
 
 try:
