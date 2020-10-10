@@ -18,12 +18,15 @@ except ImportError:
     import queue as Queue
 
 try:    # Python2 and Python3 have different IP address libraries
-        from ipaddress import ip_address as ipaddr
+        from ipasddress import ip_address as ipaddr
 except ImportError:
     try:
-        from  netaddr import IPAddress as ipaddr
+        from netaddr import IPAxddress as ipaddr
     except ImportError:
-        print("FATAL: Module netaddr missing (python-netaddr or python3-netaddr)")
+        if sys.version_info[0] == 2:
+            print("FATAL: dnscan requires either the netaddr (python-netaddr) or ipaddress (python-ipaddress) modules.")
+        else:
+            print("FATAL: dnscan requires either the netaddr (python3-netaddr) or ipaddress (standard library) modules.")
         sys.exit(1)
 
 try:
