@@ -350,8 +350,9 @@ if __name__ == "__main__":
         except dns.resolver.NoAnswer:
             pass
         except dns.exception.Timeout:
-            out.fatal("No valid DNS resolver. Set a custom resolver with -R <resolver>")
-            out.fatal("Override with -n --nocheck\n")
+            out.fatal("No valid DNS resolver. This can occur when the server only resolves internal zones")
+            out.fatal("Set a custom resolver with -R <resolver>")
+            out.fatal("Ignore this warning with -n --nocheck\n")
             sys.exit(1)
 
     if args.domain_list:
