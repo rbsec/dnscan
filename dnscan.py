@@ -374,7 +374,7 @@ if __name__ == "__main__":
             out.status("Using specified resolver {}".format(args.resolver))
         else:
             out.status("Using system resolvers {}".format(resolver.nameservers))
-        if args.tld and not '%%' in args.domain:
+        if args.tld and not '%%' in target:
             if "." in target:
                 out.warn("Warning: TLD scanning works best with just the domain root")
             out.good("TLD Scan")
@@ -383,7 +383,7 @@ if __name__ == "__main__":
             queue.put(target)   # Add actual domain as well as subdomains
 
             # These checks will all fail if we have a custom injection point, so skip them
-            if not '%%' in args.domain:
+            if not '%%' in target:
                 nameservers = get_nameservers(target)
                 out.good("Getting nameservers")
                 targetns = []       # NS servers for target
