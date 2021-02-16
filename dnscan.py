@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # dnscan copyright (C) 2013-2014 rbsec
 # Licensed under GPLv3, see LICENSE for details
@@ -146,7 +146,7 @@ class col:
 
 def lookup(domain, recordtype):
     try:
-        res = resolver.query(domain, recordtype)
+        res = resolver.resolve(domain, recordtype)
         return res
     except:
         return
@@ -171,7 +171,7 @@ def get_wildcard(target):
 
 def get_nameservers(target):
     try:
-        ns = resolver.query(target, 'NS')
+        ns = resolver.resolve(target, 'NS')
         return ns
     except:
         return
@@ -346,7 +346,7 @@ if __name__ == "__main__":
     setup()
     if args.nocheck == False:
         try:
-            resolver.query('.', 'NS')
+            resolver.resolve('.', 'NS')
         except dns.resolver.NoAnswer:
             pass
         except dns.exception.Timeout:
