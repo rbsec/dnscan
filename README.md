@@ -58,6 +58,8 @@ Note that when you use this option, you should only specify the base of the doma
 Setup
 -----
 
+dnscan requires Python 3, and the netaddr (version 0.7.19 or greater) and dnspython (version 2.0.0 or greater) libraries.
+
 Run the following command to install dependencies:
 
     $ pip install -r requirements.txt
