@@ -4,6 +4,7 @@
 # Licensed under GPLv3, see LICENSE for details
 #
 from __future__ import print_function
+from packaging import version
 
 import os
 import platform
@@ -41,6 +42,10 @@ try:
     import dns.zone
 except:
     print("FATAL: Module dnspython missing (python-dnspython)")
+    sys.exit(1)
+
+if (version.parse(dns.__version__) < version.parse("2.0.0")):
+    print("dnscan requires dnspython 2.0.0 or greater.\nYou can install it with `pip install -r requirements.txt`")
     sys.exit(1)
 
 # Usage: dnscan.py -d <domain name>
