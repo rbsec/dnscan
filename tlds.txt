@@ -14,7 +14,6 @@ accenture
 accountant
 accountants
 aco
-active
 actor
 ad
 adac
@@ -33,7 +32,6 @@ agakhan
 agency
 ai
 aig
-aigo
 airbus
 airforce
 airtel
@@ -48,6 +46,7 @@ ally
 alsace
 alstom
 am
+amazon
 americanexpress
 americanfamily
 amex
@@ -144,7 +143,6 @@ biz
 bj
 black
 blackfriday
-blanco
 blockbuster
 blog
 bloomberg
@@ -153,7 +151,6 @@ bm
 bms
 bmw
 bn
-bnl
 bnpparibas
 bo
 boats
@@ -164,7 +161,6 @@ bond
 boo
 book
 booking
-boots
 bosch
 bostik
 boston
@@ -213,10 +209,8 @@ care
 career
 careers
 cars
-cartier
 casa
 case
-caseih
 cash
 casino
 cat
@@ -228,7 +222,6 @@ cbre
 cbs
 cc
 cd
-ceb
 center
 ceo
 cern
@@ -239,14 +232,13 @@ cg
 ch
 chanel
 channel
+charity
 chase
 chat
 cheap
 chintai
-chloe
 christmas
 chrome
-chrysler
 church
 ci
 cipriani
@@ -298,6 +290,7 @@ country
 coupon
 coupons
 courses
+cpa
 cr
 credit
 creditcard
@@ -359,9 +352,7 @@ dnp
 do
 docs
 doctor
-dodge
 dog
-doha
 domains
 dot
 download
@@ -370,7 +361,6 @@ dtv
 dubai
 duck
 dunlop
-duns
 dupont
 durban
 dvag
@@ -391,7 +381,6 @@ energy
 engineer
 engineering
 enterprises
-epost
 epson
 equipment
 er
@@ -400,14 +389,12 @@ erni
 es
 esq
 estate
-esurance
 et
 etisalat
 eu
 eurovision
 eus
 events
-everbank
 exchange
 expert
 exposed
@@ -487,6 +474,7 @@ game
 games
 gap
 garden
+gay
 gb
 gbiz
 gd
@@ -522,7 +510,6 @@ gold
 goldpoint
 golf
 goo
-goodhands
 goodyear
 goog
 google
@@ -537,6 +524,7 @@ graphics
 gratis
 green
 gripe
+grocery
 group
 gs
 gt
@@ -579,7 +567,6 @@ homegoods
 homes
 homesense
 honda
-honeywell
 horse
 hospital
 host
@@ -593,7 +580,6 @@ how
 hr
 hsbc
 ht
-htc
 hu
 hughes
 hyatt
@@ -614,6 +600,7 @@ imdb
 immo
 immobilien
 in
+inc
 industries
 infiniti
 info
@@ -623,7 +610,6 @@ institute
 insurance
 insure
 int
-intel
 international
 intuit
 investments
@@ -633,7 +619,6 @@ iq
 ir
 irish
 is
-iselect
 ismaili
 ist
 istanbul
@@ -641,17 +626,14 @@ it
 itau
 itv
 iveco
-iwc
 jaguar
 java
 jcb
-jcp
 je
 jeep
 jetzt
 jewelry
 jio
-jlc
 jll
 jm
 jmp
@@ -700,12 +682,10 @@ kyoto
 kz
 la
 lacaixa
-ladbrokes
 lamborghini
 lamer
 lancaster
 lancia
-lancome
 land
 landrover
 lanxess
@@ -726,7 +706,6 @@ lego
 lexus
 lgbt
 li
-liaison
 lidl
 life
 lifeinsurance
@@ -744,6 +723,8 @@ live
 living
 lixil
 lk
+llc
+llp
 loan
 loans
 locker
@@ -763,7 +744,6 @@ ltd
 ltda
 lu
 lundbeck
-lupin
 luxe
 luxury
 lv
@@ -777,6 +757,7 @@ makeup
 man
 management
 mango
+map
 market
 marketing
 markets
@@ -786,8 +767,6 @@ maserati
 mattel
 mba
 mc
-mcd
-mcdonalds
 mckinsey
 md
 me
@@ -799,8 +778,7 @@ meme
 memorial
 men
 menu
-meo
-metlife
+merckmsd
 mg
 mh
 miami
@@ -820,7 +798,6 @@ mn
 mo
 mobi
 mobile
-mobily
 moda
 moe
 moi
@@ -828,8 +805,6 @@ mom
 monash
 money
 monster
-montblanc
-mopar
 mormon
 mortgage
 moscow
@@ -837,7 +812,6 @@ moto
 motorcycles
 mov
 movie
-movistar
 mp
 mq
 mr
@@ -856,7 +830,6 @@ my
 mz
 na
 nab
-nadex
 nagoya
 name
 nationwide
@@ -872,7 +845,6 @@ netflix
 network
 neustar
 new
-newholland
 news
 next
 nextdirect
@@ -934,9 +906,7 @@ ott
 ovh
 pa
 page
-pamperedchef
 panasonic
-panerai
 paris
 pars
 partners
@@ -952,13 +922,13 @@ pfizer
 pg
 ph
 pharmacy
+phd
 philips
 phone
 photo
 photography
 photos
 physio
-piaget
 pics
 pictet
 pictures
@@ -1041,7 +1011,6 @@ rexroth
 rich
 richardli
 ricoh
-rightathome
 ril
 rio
 rip
@@ -1074,7 +1043,6 @@ sandvik
 sandvikcoromant
 sanofi
 sap
-sapo
 sarl
 sas
 save
@@ -1093,10 +1061,10 @@ schule
 schwarz
 science
 scjohnson
-scor
 scot
 sd
 se
+search
 seat
 secure
 security
@@ -1124,7 +1092,6 @@ shopping
 shouji
 show
 showtime
-shriram
 si
 silk
 sina
@@ -1154,21 +1121,20 @@ solutions
 song
 sony
 soy
+spa
 space
-spiegel
+sport
 spot
 spreadbetting
 sr
 srl
-srt
+ss
 st
 stada
 staples
 star
-starhub
 statebank
 statefarm
-statoil
 stc
 stcgroup
 stockholm
@@ -1193,7 +1159,6 @@ swiss
 sx
 sy
 sydney
-symantec
 systems
 sz
 tab
@@ -1214,8 +1179,6 @@ team
 tech
 technology
 tel
-telecity
-telefonica
 temasek
 tennis
 teva
@@ -1275,7 +1238,6 @@ tz
 ua
 ubank
 ubs
-uconnect
 ug
 uk
 unicom
@@ -1309,8 +1271,6 @@ vip
 virgin
 visa
 vision
-vista
-vistaprint
 viva
 vivo
 vlaanderen
@@ -1329,7 +1289,6 @@ walmart
 walter
 wang
 wanggou
-warman
 watch
 watches
 weather
@@ -1368,15 +1327,19 @@ xin
 xn--11b4c3d
 xn--1ck2e1b
 xn--1qqw23a
+xn--2scrj9c
 xn--30rr7y
 xn--3bst00m
 xn--3ds443g
 xn--3e0b707e
+xn--3hcrj9c
 xn--3oq18vl8pn36a
 xn--3pxu8k
 xn--42c2d9a
+xn--45br5cyl
 xn--45brj9c
 xn--45q11c
+xn--4dbrk0ce
 xn--4gbrim
 xn--54b7fta0cc
 xn--55qw42g
@@ -1402,6 +1365,7 @@ xn--bck1b9a5dre4c
 xn--c1avg
 xn--c2br7g
 xn--cck2b3b
+xn--cckwcxetd
 xn--cg4bki
 xn--clchc0ea0b2g2a9gcd
 xn--czr694b
@@ -1412,7 +1376,6 @@ xn--d1alf
 xn--e1a4c
 xn--eckvdtc9d
 xn--efvy88h
-xn--estv75g
 xn--fct429k
 xn--fhbei
 xn--fiq228c5hs
@@ -1428,7 +1391,9 @@ xn--g2xx48c
 xn--gckr3f0f
 xn--gecrj9c
 xn--gk3at1e
+xn--h2breg3eve
 xn--h2brj9c
+xn--h2brj9c8c
 xn--hxt814e
 xn--i1b6b1a6a2e
 xn--imr513n
@@ -1436,12 +1401,12 @@ xn--io0a7i
 xn--j1aef
 xn--j1amh
 xn--j6w193g
+xn--jlq480n2rg
 xn--jlq61u9w7b
 xn--jvr189m
 xn--kcrx77d1x4a
 xn--kprw13d
 xn--kpry57d
-xn--kpu716f
 xn--kput3i
 xn--l1acc
 xn--lgbbat1ad8j
@@ -1452,13 +1417,16 @@ xn--mgba7c0bbn0a
 xn--mgbaakc7dvf
 xn--mgbaam7a8h
 xn--mgbab2bd
+xn--mgbah1a3hjkrd
 xn--mgbai9azgqp6j
 xn--mgbayh7gpa
-xn--mgbb9fbpob
+xn--mgbbh1a
 xn--mgbbh1a71e
 xn--mgbc0a9azcg
 xn--mgbca7dzdo
+xn--mgbcpq6gpa1a
 xn--mgberp4a5d4ar
+xn--mgbgu82a
 xn--mgbi4ecexp
 xn--mgbpl2fh
 xn--mgbt3dhd
@@ -1476,16 +1444,19 @@ xn--nqv7fs00ema
 xn--nyqy26a
 xn--o3cw4h
 xn--ogbpf8fl
+xn--otu796d
 xn--p1acf
 xn--p1ai
-xn--pbt977c
 xn--pgbs0dh
 xn--pssy2u
+xn--q7ce6a
 xn--q9jyb4c
 xn--qcka1pmc
+xn--qxa6a
 xn--qxam
 xn--rhqv96g
 xn--rovu88b
+xn--rvc1e0am3e
 xn--s9brj9c
 xn--ses554g
 xn--t60b56a
@@ -1507,7 +1478,6 @@ xn--y9a3aq
 xn--yfro4i67o
 xn--ygbi2ammx
 xn--zfr164b
-xperia
 xxx
 xyz
 yachts
@@ -1527,7 +1497,6 @@ zappos
 zara
 zero
 zip
-zippo
 zm
 zone
 zuerich
