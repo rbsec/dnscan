@@ -227,7 +227,7 @@ def get_dnssec(target, nameserver):
     request = dns.message.make_query(target, dns.rdatatype.DNSKEY, want_dnssec=True)
     response = dns.query.udp(request, nameserver)
     if response.rcode() != 0:
-        out.warn("DNSKEY lookup returned error code " + str(response.rcode))
+        out.warn("DNSKEY lookup returned error code " + dns.rcode.to_text(response.rcode()) + "\n")
     else:
         answer = response.answer
         if len(answer) == 0:
@@ -423,16 +423,15 @@ if __name__ == "__main__":
                         res = lookup(ns, "A")
                         for rdata in res:
                             targetns.append(rdata.address)
-                            print(rdata.address + " - " + col.brown + ns + col.end)
+                            nsip = rdata.address
+                            print(nsip + " - " + col.brown + ns + col.end)
                             if outfile:
-                                print(rdata.address + " - " + ns, file=outfile)
+                                print(nsip + " - " + ns, file=outfile)
                         zone_transfer(target, ns)
                 except SystemExit:
                     sys.exit(0)
                 except:
                     out.warn("Getting nameservers failed")
-        #    resolver.nameservers = targetns     # Use target's NS servers for lokups
-        # Missing results using domain's NS - removed for now
                 out.warn("Zone transfer failed\n")
                 if args.zonetransfer:
                     sys.exit(0)
@@ -440,7 +439,12 @@ if __name__ == "__main__":
                 get_v6(target)
                 get_txt(target)
                 get_dmarc(target)
-                get_dnssec(target, resolver.nameservers[0])
+
+                # These checks need a proper nameserver, the systemd stub doesn't work
+                if nsip:
+                    get_dnssec(target, nsip)
+                else:
+                    get_dnssec(target, resolver.nameservers[0])
                 get_mx(target)
             wildcard = get_wildcard(target)
             if wildcard:
