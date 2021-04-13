@@ -5843,7 +5843,6 @@ nom.af
 nom.ai
 nom.al
 nym.by
-nom.bz
 nom.cl
 nym.ec
 nom.gd
