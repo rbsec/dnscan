@@ -222,6 +222,31 @@ def get_dmarc(target):
     except:
         return
 
+def get_dnssec(target, nameserver):
+    out.verbose("Checking DNSSEC")
+    request = dns.message.make_query(target, dns.rdatatype.DNSKEY, want_dnssec=True)
+    response = dns.query.udp(request, nameserver)
+    if response.rcode() != 0:
+        out.warn("DNSKEY lookup returned error code " + str(response.rcode))
+    else:
+        answer = response.answer
+        if len(answer) == 0:
+            out.warn("DNSSEC not supported\n")
+        elif len(answer) != 2:
+            out.warn("Invalid DNSKEY record length\n")
+        else:
+            name = dns.name.from_text(target)
+            try:
+                dns.dnssec.validate(answer[0],answer[1],{name:answer[0]})
+            except dns.dnssec.ValidationFailure:
+                out.warn("DNSSEC key validation failed\n")
+            else:
+                out.good("DNSSEC enabled and validated")
+                dnssec_values = str(answer[0][0]).split(' ')
+                algorithm_int = int(dnssec_values[2])
+                algorithm_str = dns.dnssec.algorithm_to_text(algorithm_int)
+                print("Algorithm = " + algorithm_str + " (" + str(algorithm_int) + ")\n")
+
 def get_mx(target):
     out.verbose("Getting MX records")
     try:
@@ -415,6 +440,7 @@ if __name__ == "__main__":
                 get_v6(target)
                 get_txt(target)
                 get_dmarc(target)
+                get_dnssec(target, resolver.nameservers[0])
                 get_mx(target)
             wildcard = get_wildcard(target)
             if wildcard:
