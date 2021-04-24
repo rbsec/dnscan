@@ -328,11 +328,6 @@ def setup():
     else:
         if not args.wordlist:   # Try to use default wordlist if non specified
             args.wordlist = os.path.join(os.path.dirname(os.path.realpath(__file__)), "subdomains.txt")
-    try:
-        wordlist = open(args.wordlist).read().splitlines()
-    except:
-        out.fatal("Could not open wordlist " + args.wordlist)
-        sys.exit(1)
 
     # Open file handle for output
     try:
@@ -346,6 +341,12 @@ def setup():
         outfile_ips = open(args.output_ips, "w")
     else:
         outfile_ips = None
+
+    try:
+        wordlist = open(args.wordlist).read().splitlines()
+    except:
+        out.fatal("Could not open wordlist " + args.wordlist)
+        sys.exit(1)
 
     # Number of threads should be between 1 and 32
     if args.threads < 1:
