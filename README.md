@@ -26,6 +26,8 @@ dnscan.py (-d \<domain\> | -l \<list\>) [OPTIONS]
     -T --tld                                  Scan for the domain in all TLDs
     -o --output <filename>                    Output to a text file
     -i --output-ips <filename>                Output discovered IP addresses to a text file
+    -n --nocheck                              Don't check nameservers before scanning. Useful in airgapped networks
+    -q --quick                                Only perform the zone transfer and subdomain scans. Suppresses most file output with -o
     -v --verbose                              Verbose output
     -h --help                                 Display help text
 

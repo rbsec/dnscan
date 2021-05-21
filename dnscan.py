@@ -109,28 +109,28 @@ class scanner(threading.Thread):
 class output:
     def status(self, message):
         print(col.blue + "[*] " + col.end + message)
-        if outfile:
+        if outfile and not args.quick:
             print("[*] " + message, file=outfile)
 
     def good(self, message):
         print(col.green + "[+] " + col.end + message)
-        if outfile:
+        if outfile and not args.quick:
             print("[+] " + message, file=outfile)
 
     def verbose(self, message):
         if args.verbose:
             print(col.brown + "[v] " + col.end + message)
-            if outfile:
+            if outfile and not args.quick:
                 print("[v] " + message, file=outfile)
 
     def warn(self, message):
         print(col.red + "[-] " + col.end + message)
-        if outfile:
+        if outfile and not args.quick:
             print("[-] " + message, file=outfile)
 
     def fatal(self, message):
         print("\n" + col.red + "FATAL: " + message + col.end)
-        if outfile:
+        if outfile and not args.quick:
             print("FATAL " + message, file=outfile)
 
 
@@ -317,6 +317,7 @@ def get_args():
     parser.add_argument('-D', '--domain-first', action="store_true", default=False, help='Output domain first, rather than IP address', dest='domain_first', required=False)
     parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
     parser.add_argument('-n', '--nocheck', action="store_true", default=False, help='Don\'t check nameservers before scanning', dest='nocheck', required=False)
+    parser.add_argument('-q', '--quick', action="store_true", default=False, help='Only perform zone transfer and subdomains scan, with minimal output to file', dest='quick', required=False)
     args = parser.parse_args()
 
 def setup():
@@ -426,8 +427,9 @@ if __name__ == "__main__":
                             targetns.append(rdata.address)
                             nsip = rdata.address
                             print(nsip + " - " + col.brown + ns + col.end)
-                            if outfile:
-                                print(nsip + " - " + ns, file=outfile)
+                            if not args.quick:
+                                if outfile:
+                                    print(nsip + " - " + ns, file=outfile)
                         zone_transfer(target, ns)
                 except SystemExit:
                     sys.exit(0)
@@ -437,16 +439,17 @@ if __name__ == "__main__":
                 if args.zonetransfer:
                     sys.exit(0)
 
-                get_v6(target)
-                get_txt(target)
-                get_dmarc(target)
+                if not args.quick:
+                    get_v6(target)
+                    get_txt(target)
+                    get_dmarc(target)
 
-                # These checks need a proper nameserver, the systemd stub doesn't work
-                if nsip:
-                    get_dnssec(target, nsip)
-                else:
-                    get_dnssec(target, resolver.nameservers[0])
-                get_mx(target)
+                    # These checks need a proper nameserver, the systemd stub doesn't work
+                    if nsip:
+                        get_dnssec(target, nsip)
+                    else:
+                        get_dnssec(target, resolver.nameservers[0])
+                    get_mx(target)
             wildcard = get_wildcard(target)
             if wildcard:
                 for wildcard_ip in wildcard:
