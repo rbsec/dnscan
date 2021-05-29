@@ -311,6 +311,7 @@ def get_args():
     parser.add_argument('-z', '--zonetransfer', action="store_true", default=False, help='Only perform zone transfers', dest='zonetransfer', required=False)
     parser.add_argument('-r', '--recursive', action="store_true", default=False, help="Recursively scan subdomains", dest='recurse', required=False)
     parser.add_argument('-R', '--resolver', help="Use the specified resolver instead of the system default", dest='resolver', required=False)
+    parser.add_argument('-L', '--resolver-list', help="File containing list of resolvers", dest='resolver_list', required=False)
     parser.add_argument('-T', '--tld', action="store_true", default=False, help="Scan for TLDs", dest='tld', required=False)
     parser.add_argument('-o', '--output', help="Write output to a file", dest='output_filename', required=False)
     parser.add_argument('-i', '--output-ips',   help="Write discovered IP addresses to a file", dest='output_ips', required=False)
@@ -358,7 +359,13 @@ def setup():
     resolver = dns.resolver.Resolver()
     resolver.timeout = 1
     resolver.lifetime = 1
-    if args.resolver:
+    if args.resolver_list:
+        try: 
+            resolver.nameservers = open(args.resolver_list, 'r').read().splitlines()
+        except FileNotFoundError:
+            out.fatal("Could not open file containing resolvers: " + args.wordlist)
+            sys.exit(1)
+    elif args.resolver:
         resolver.nameservers = [ args.resolver ]
 
     # Record type
