@@ -91,7 +91,7 @@ class scanner(threading.Thread):
                     except NameError:
                         addresses.add(ipaddr(str(address)))
 
-                if domain != target and args.recurse:    # Don't scan root domain twice
+                if domain != target and args.recurse and domain.count(".") <= args.depth + 1:    # Don't scan root domain twice
                     add_target(domain)  # Recursively scan subdomains
             except:
                 pass
@@ -310,6 +310,7 @@ def get_args():
     parser.add_argument('-6', '--ipv6', help='Scan for AAAA records', action="store_true", dest='ipv6', required=False, default=False)
     parser.add_argument('-z', '--zonetransfer', action="store_true", default=False, help='Only perform zone transfers', dest='zonetransfer', required=False)
     parser.add_argument('-r', '--recursive', action="store_true", default=False, help="Recursively scan subdomains", dest='recurse', required=False)
+    parser.add_argument('-D', '--depth', help="Maximal recursion depth (for brute-forcing)", dest='depth', required=False, type=int, default=100)
     parser.add_argument('-R', '--resolver', help="Use the specified resolver instead of the system default", dest='resolver', required=False)
     parser.add_argument('-T', '--tld', action="store_true", default=False, help="Scan for TLDs", dest='tld', required=False)
     parser.add_argument('-o', '--output', help="Write output to a file", dest='output_filename', required=False)
