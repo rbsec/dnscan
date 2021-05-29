@@ -92,7 +92,9 @@ class scanner(threading.Thread):
                         addresses.add(ipaddr(str(address)))
 
                 if domain != target and args.recurse:    # Don't scan root domain twice
-                    add_target(domain)  # Recursively scan subdomains
+                    wildcard = get_wildcard(domain)
+                    if not wildcard:
+                        add_target(domain)  # Recursively scan subdomains
             except:
                 pass
 
@@ -169,10 +171,10 @@ def get_wildcard(target):
         for res_data in res:
             address = res_data.address
             wildcards.append(address)
-            out.good(col.red + "Wildcard" + col.end + " domain found - " + col.brown + address + col.end)
-        return wildcards
+            out.warn("Wildcard domain found - " + col.yellow + "*." + target + col.end)
     else:
         out.verbose("No wildcard domain found")
+    return wildcards
 
 def get_nameservers(target):
     try:
