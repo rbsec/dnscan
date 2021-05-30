@@ -303,12 +303,23 @@ def zone_transfer(domain, ns):
         pass
 
 def add_target(domain):
-    if '%%' in domain:
-        for word in wordlist:
-            queue.put(domain.replace(r'%%', word))
-    else:
-        for word in wordlist:
-            queue.put(word + "." + domain)
+    for word in wordlist:
+        patterns = [word]
+        if args.alt:
+            probes = ["dev", "prod", "stg", "qa", "uat", "api", "alpha", "beta",
+                      "cms", "test", "internal", "staging", "origin", "stage", "m"]
+            for probe in probes:
+                patterns.append(probe + word)
+                patterns.append(word + probe)
+                patterns.append(probe + "-" + word)
+                patterns.append(word + "-" + probe)
+            for n in range(1, 10):
+                patterns.append(word + str(n))
+        for pattern in patterns:
+            if '%%' in domain:
+                queue.put(domain.replace(r'%%', pattern))
+            else:
+                queue.put(pattern + "." + domain)
 
 def add_tlds(domain):
     for tld in wordlist:
@@ -324,19 +335,20 @@ def get_args():
     target.add_argument('-l', '--list', help='File containing list of target domains', dest='domain_list', required=False)
     parser.add_argument('-w', '--wordlist', help='Wordlist', dest='wordlist', required=False)
     parser.add_argument('-t', '--threads', help='Number of threads', dest='threads', required=False, type=int, default=8)
-    parser.add_argument('-6', '--ipv6', help='Scan for AAAA records', action="store_true", dest='ipv6', required=False, default=False)
-    parser.add_argument('-z', '--zonetransfer', action="store_true", default=False, help='Only perform zone transfers', dest='zonetransfer', required=False)
-    parser.add_argument('-r', '--recursive', action="store_true", default=False, help="Recursively scan subdomains", dest='recurse', required=False)
+    parser.add_argument('-6', '--ipv6', action="store_true", help='Scan for AAAA records', dest='ipv6')
+    parser.add_argument('-z', '--zonetransfer', action="store_true", help='Only perform zone transfers', dest='zonetransfer')
+    parser.add_argument('-r', '--recursive', action="store_true", help="Recursively scan subdomains", dest='recurse')
     parser.add_argument('-m', '--maxdepth', help='Maximal recursion depth (for brute-forcing)', dest='maxdepth', required=False, type=int, default=5)
+    parser.add_argument('-a', '--alterations', action="store_true", help='Scan for alterations of subdomains', dest='alt')
     parser.add_argument('-R', '--resolver', help="Use the specified resolvers (separated by commas)", dest='resolvers', required=False)
     parser.add_argument('-L', '--resolver-list', help="File containing list of resolvers", dest='resolver_list', required=False)
-    parser.add_argument('-T', '--tld', action="store_true", default=False, help="Scan for TLDs", dest='tld', required=False)
+    parser.add_argument('-T', '--tld', action="store_true", help="Scan for TLDs", dest='tld')
     parser.add_argument('-o', '--output', help="Write output to a file", dest='output_filename', required=False)
-    parser.add_argument('-i', '--output-ips',   help="Write discovered IP addresses to a file", dest='output_ips', required=False)
-    parser.add_argument('-D', '--domain-first', action="store_true", default=False, help='Output domain first, rather than IP address', dest='domain_first', required=False)
-    parser.add_argument('-v', '--verbose', action="store_true", default=False, help='Verbose mode', dest='verbose', required=False)
-    parser.add_argument('-n', '--nocheck', action="store_true", default=False, help='Don\'t check nameservers before scanning', dest='nocheck', required=False)
-    parser.add_argument('-q', '--quick', action="store_true", default=False, help='Only perform zone transfer and subdomains scan, with minimal output to file', dest='quick', required=False)
+    parser.add_argument('-i', '--output-ips', help="Write discovered IP addresses to a file", dest='output_ips', required=False)
+    parser.add_argument('-D', '--domain-first', action="store_true", help='Output domain first, rather than IP address', dest='domain_first')
+    parser.add_argument('-v', '--verbose', action="store_true", help='Verbose mode', dest='verbose')
+    parser.add_argument('-n', '--nocheck', action="store_true", help='Don\'t check nameservers before scanning', dest='nocheck')
+    parser.add_argument('-q', '--quick', action="store_true", help='Only perform zone transfer and subdomains scan, with minimal output to file', dest='quick')
     args = parser.parse_args()
 
 def setup():
