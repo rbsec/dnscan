@@ -102,6 +102,13 @@ class scanner(threading.Thread):
                      args.recurse and \
                      domain.count('.') - target.count('.') <= args.maxdepth
                      ):
+                    # Check if subdomain is wildcard so can filter false positives in the recursive scan
+                    wildcard = get_wildcard(domain)
+                    for wildcard_ip in wildcard:
+                        try:
+                            addresses.add(ipaddr(unicode(wildcard_ip)))
+                        except NameError:
+                            addresses.add(ipaddr(str(wildcard_ip)))
                     add_target(domain)  # Recursively scan subdomains
             except:
                 pass
@@ -179,10 +186,10 @@ def get_wildcard(target):
         for res_data in res:
             address = res_data.address
             wildcards.append(address)
-            out.good(col.red + "Wildcard" + col.end + " domain found - " + col.brown + address + col.end)
-        return wildcards
+            out.warn("Wildcard domain found - " + col.brown + "*." + target + col.end)
     else:
         out.verbose("No wildcard domain found")
+    return wildcards
 
 def get_nameservers(target):
     try:
@@ -463,12 +470,11 @@ if __name__ == "__main__":
                         get_dnssec(target, resolver.nameservers[0])
                     get_mx(target)
             wildcard = get_wildcard(target)
-            if wildcard:
-                for wildcard_ip in wildcard:
-                    try:
-                        addresses.add(ipaddr(unicode(wildcard_ip)))
-                    except NameError:
-                        addresses.add(ipaddr(str(wildcard_ip)))
+            for wildcard_ip in wildcard:
+                try:
+                    addresses.add(ipaddr(unicode(wildcard_ip)))
+                except NameError:
+                    addresses.add(ipaddr(str(wildcard_ip)))
             out.status("Scanning " + target + " for " + recordtype + " records")
             add_target(target)
 
