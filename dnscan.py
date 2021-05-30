@@ -360,7 +360,7 @@ def setup():
     resolver.timeout = 1
     resolver.lifetime = 1
     if args.resolvers_list:
-        try: 
+        try:
             resolver.nameservers = open(args.resolvers_list, 'r').read().splitlines()
         except FileNotFoundError:
             out.fatal("Could not open file containing resolvers: " + args.resolvers_list)
