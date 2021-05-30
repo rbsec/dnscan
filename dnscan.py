@@ -58,17 +58,22 @@ class scanner(threading.Thread):
 
     def get_name(self, domain):
             global wildcard, addresses
+            size = int(os.popen('stty size', 'r').read().split()[1]) - 1 # Get terminal width in order to clean output later
             try:
                 if sys.stdout.isatty():     # Don't spam output if redirected
-                    sys.stdout.write(domain + "                              \r")
+                    sys.stdout.write(domain + " " * (size - domain) + "\r")
                     sys.stdout.flush()
                 res = lookup(domain, recordtype)
                 if args.tld and res:
                     nameservers = sorted(list(res))
                     ns0 = str(nameservers[0])[:-1]  # First nameserver
+                    sys.stdout.write(" " * size + "\r")
+                    sys.stdout.flush()
                     print(domain + " - " + col.brown + ns0 + col.end)
                 if args.tld:
                     if res:
+                        sys.stdout.write(" " * size + "\r")
+                        sys.stdout.flush()
                         print(domain + " - " + res)
                     return
                 for rdata in res:
@@ -77,6 +82,8 @@ class scanner(threading.Thread):
                         for wildcard_ip in wildcard:
                             if address == wildcard_ip:
                                 return
+                    sys.stdout.write(" " * size + "\r")
+                    sys.stdout.flush()
                     if args.domain_first:
                         print(domain + " - " + col.brown + address + col.end)
                     else:
