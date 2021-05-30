@@ -61,7 +61,7 @@ class scanner(threading.Thread):
             size = int(os.popen('stty size', 'r').read().split()[1]) - 1 # Get terminal width in order to clean output later
             try:
                 if sys.stdout.isatty():     # Don't spam output if redirected
-                    sys.stdout.write(domain + " " * (size - domain) + "\r")
+                    sys.stdout.write(domain + " " * (size - len(domain)) + "\r")
                     sys.stdout.flush()
                 res = lookup(domain, recordtype)
                 if args.tld and res:
