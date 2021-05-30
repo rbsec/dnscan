@@ -303,7 +303,7 @@ def get_args():
     parser = argparse.ArgumentParser('dnscan.py', formatter_class=lambda prog:argparse.HelpFormatter(prog,max_help_position=40),
             epilog="Specify a custom insertion point with %% in the domain name, such as: dnscan.py -d dev-%%.example.org")
     target = parser.add_mutually_exclusive_group(required=True) # Allow a user to specify a list of target domains
-    target.add_argument('-d', '--domain', help='Target domain', dest='domain', required=False)
+    target.add_argument('-d', '--domain', help='Target domains (separated by commas)', dest='domain', required=False)
     target.add_argument('-l', '--list', help='File containing list of target domains', dest='domain_list', required=False)
     parser.add_argument('-w', '--wordlist', help='Wordlist', dest='wordlist', required=False)
     parser.add_argument('-t', '--threads', help='Number of threads', dest='threads', required=False, type=int, default=8)
@@ -324,7 +324,7 @@ def get_args():
 def setup():
     global targets, wordlist, queue, resolver, recordtype, outfile, outfile_ips
     if args.domain:
-        targets = [args.domain]
+        targets = args.domain.split(",")
     if args.tld and not args.wordlist:
         args.wordlist = os.path.join(os.path.dirname(os.path.realpath(__file__)), "tlds.txt")
     else:
