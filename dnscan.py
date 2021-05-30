@@ -328,8 +328,8 @@ def get_args():
     parser.add_argument('-z', '--zonetransfer', action="store_true", default=False, help='Only perform zone transfers', dest='zonetransfer', required=False)
     parser.add_argument('-r', '--recursive', action="store_true", default=False, help="Recursively scan subdomains", dest='recurse', required=False)
     parser.add_argument('-m', '--maxdepth', help='Maximal recursion depth (for brute-forcing)', dest='maxdepth', required=False, type=int, default=5)
-    parser.add_argument('-R', '--resolvers', help="Use the specified resolvers (separated by commas)", dest='resolvers', required=False)
-    parser.add_argument('-L', '--resolvers-list', help="File containing list of resolvers", dest='resolvers_list', required=False)
+    parser.add_argument('-R', '--resolver', help="Use the specified resolvers (separated by commas)", dest='resolvers', required=False)
+    parser.add_argument('-L', '--resolver-list', help="File containing list of resolvers", dest='resolver_list', required=False)
     parser.add_argument('-T', '--tld', action="store_true", default=False, help="Scan for TLDs", dest='tld', required=False)
     parser.add_argument('-o', '--output', help="Write output to a file", dest='output_filename', required=False)
     parser.add_argument('-i', '--output-ips',   help="Write discovered IP addresses to a file", dest='output_ips', required=False)
@@ -368,20 +368,20 @@ def setup():
         out.fatal("Could not open wordlist " + args.wordlist)
         sys.exit(1)
 
-    # Number of threads should be between 1 and 72
+    # Number of threads should be between 1 and 32
     if args.threads < 1:
         args.threads = 1
-    elif args.threads > 72:
-        args.threads = 72
+    elif args.threads > 32:
+        args.threads = 32
     queue = Queue.Queue()
     resolver = dns.resolver.Resolver()
     resolver.timeout = 1
     resolver.lifetime = 1
-    if args.resolvers_list:
+    if args.resolver_list:
         try:
-            resolver.nameservers = open(args.resolvers_list, 'r').read().splitlines()
+            resolver.nameservers = open(args.resolver_list, 'r').read().splitlines()
         except FileNotFoundError:
-            out.fatal("Could not open file containing resolvers: " + args.resolvers_list)
+            out.fatal("Could not open file containing resolvers: " + args.resolver_list)
             sys.exit(1)
     elif args.resolvers:
         resolver.nameservers = args.resolvers.split(",")
@@ -427,8 +427,8 @@ if __name__ == "__main__":
         global target
         target = subtarget
         out.status("Processing domain {}".format(target))
-        if args.resolvers_list:
-            out.status("Using resolvers from: {}".format(args.resolvers_list))
+        if args.resolver_list:
+            out.status("Using resolvers from: {}".format(args.resolver_list))
         elif args.resolvers:
             out.status("Using specified resolvers: {}".format(args.resolvers))
         else:
