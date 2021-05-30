@@ -301,7 +301,8 @@ def get_args():
     parser.add_argument('-z', '--zonetransfer', action="store_true", default=False, help='Only perform zone transfers', dest='zonetransfer', required=False)
     parser.add_argument('-r', '--recursive', action="store_true", default=False, help="Recursively scan subdomains", dest='recurse', required=False)
     parser.add_argument('-D', '--depth', help="Maximal recursion depth (for brute-forcing)", dest='depth', required=False, type=int, default=100)
-    parser.add_argument('-R', '--resolver', help="Use the specified resolver instead of the system default", dest='resolver', required=False)
+    parser.add_argument('-R', '--resolvers', help="Use the specified resolvers (separated by commas)", dest='resolvers', required=False)
+    parser.add_argument('-L', '--resolvers-list', help="File containing list of resolvers", dest='resolvers_list', required=False)
     parser.add_argument('-T', '--tld', action="store_true", default=False, help="Scan for TLDs", dest='tld', required=False)
     parser.add_argument('-o', '--output', help="Write output to a file", dest='output_filename', required=False)
     parser.add_argument('-i', '--output-ips',   help="Write discovered IP addresses to a file", dest='output_ips', required=False)
@@ -349,8 +350,14 @@ def setup():
     resolver = dns.resolver.Resolver()
     resolver.timeout = 1
     resolver.lifetime = 1
-    if args.resolver:
-        resolver.nameservers = [ args.resolver ]
+    if args.resolvers_list:
+        try: 
+            resolver.nameservers = open(args.resolvers_list, 'r').read().splitlines()
+        except FileNotFoundError:
+            out.fatal("Could not open file containing resolvers: " + args.wordlist)
+            sys.exit(1)
+    elif args.resolvers:
+        resolver.nameservers = [ args.resolvers.split(",") ]
 
     # Record type
     if args.ipv6:
@@ -393,10 +400,12 @@ if __name__ == "__main__":
         global target
         target = subtarget
         out.status("Processing domain {}".format(target))
-        if args.resolver:
+        if args.resolver_list:
+            out.status("Using resolvers from {}".format(args.resolver))
+        elif args.resolver:
             out.status("Using specified resolver {}".format(args.resolver))
         else:
-            out.status("Using system resolvers {}".format(resolver.nameservers))
+            out.status("Using system resolvers {}".format(",".join(resolver.nameservers)))
         if args.tld and not '%%' in target:
             if "." in target:
                 out.warn("Warning: TLD scanning works best with just the domain root")
