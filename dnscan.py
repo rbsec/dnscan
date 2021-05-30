@@ -186,7 +186,7 @@ def get_wildcard(target):
         for res_data in res:
             address = res_data.address
             wildcards.append(address)
-            out.warn("Wildcard domain found - " + col.brown + "*." + target + col.end)
+            out.warn("Wildcard domain found - " + col.brown + "*." + target + col.end + " (" + address + ")")
     else:
         out.verbose("No wildcard domain found")
     return wildcards
