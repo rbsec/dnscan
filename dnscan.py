@@ -426,6 +426,7 @@ if __name__ == "__main__":
                 nameservers = get_nameservers(target)
                 out.good("Getting nameservers")
                 targetns = []       # NS servers for target
+                nsip = None
                 try:    # Subdomains often don't have NS recoards..
                     for ns in nameservers:
                         ns = str(ns)[:-1]   # Removed trailing dot
