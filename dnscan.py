@@ -91,7 +91,7 @@ class scanner(threading.Thread):
                     except NameError:
                         addresses.add(ipaddr(str(address)))
 
-                if domain != target and args.recurse:    # Don't scan root domain twice
+                if domain != target and args.recurse and domain.count(".") <= args.depth + 1:    # Don't scan root domain twice
                     wildcard = get_wildcard(domain)
                     if not wildcard:
                         add_target(domain)  # Recursively scan subdomains
@@ -111,29 +111,19 @@ class scanner(threading.Thread):
 class output:
     def status(self, message):
         print(col.blue + "[*] " + col.end + message)
-        if outfile and not args.quick:
-            print("[*] " + message, file=outfile)
 
     def good(self, message):
         print(col.green + "[+] " + col.end + message)
-        if outfile and not args.quick:
-            print("[+] " + message, file=outfile)
 
     def verbose(self, message):
         if args.verbose:
             print(col.brown + "[v] " + col.end + message)
-            if outfile and not args.quick:
-                print("[v] " + message, file=outfile)
 
     def warn(self, message):
         print(col.red + "[-] " + col.end + message)
-        if outfile and not args.quick:
-            print("[-] " + message, file=outfile)
 
     def fatal(self, message):
         print("\n" + col.red + "FATAL: " + message + col.end)
-        if outfile and not args.quick:
-            print("FATAL " + message, file=outfile)
 
 
 class col:
@@ -305,14 +295,16 @@ def get_args():
     parser = argparse.ArgumentParser('dnscan.py', formatter_class=lambda prog:argparse.HelpFormatter(prog,max_help_position=40),
             epilog="Specify a custom insertion point with %% in the domain name, such as: dnscan.py -d dev-%%.example.org")
     target = parser.add_mutually_exclusive_group(required=True) # Allow a user to specify a list of target domains
-    target.add_argument('-d', '--domain', help='Target domain', dest='domain', required=False)
+    target.add_argument('-d', '--domain', help='Target domains (separated by commas)', dest='domain', required=False)
     target.add_argument('-l', '--list', help='File containing list of target domains', dest='domain_list', required=False)
     parser.add_argument('-w', '--wordlist', help='Wordlist', dest='wordlist', required=False)
     parser.add_argument('-t', '--threads', help='Number of threads', dest='threads', required=False, type=int, default=8)
     parser.add_argument('-6', '--ipv6', help='Scan for AAAA records', action="store_true", dest='ipv6', required=False, default=False)
     parser.add_argument('-z', '--zonetransfer', action="store_true", default=False, help='Only perform zone transfers', dest='zonetransfer', required=False)
     parser.add_argument('-r', '--recursive', action="store_true", default=False, help="Recursively scan subdomains", dest='recurse', required=False)
-    parser.add_argument('-R', '--resolver', help="Use the specified resolver instead of the system default", dest='resolver', required=False)
+    parser.add_argument('-D', '--depth', help="Maximal recursion depth (for brute-forcing)", dest='depth', required=False, type=int, default=100)
+    parser.add_argument('-R', '--resolvers', help="Use the specified resolvers (separated by commas)", dest='resolvers', required=False)
+    parser.add_argument('-L', '--resolvers-list', help="File containing list of resolvers", dest='resolvers_list', required=False)
     parser.add_argument('-T', '--tld', action="store_true", default=False, help="Scan for TLDs", dest='tld', required=False)
     parser.add_argument('-o', '--output', help="Write output to a file", dest='output_filename', required=False)
     parser.add_argument('-i', '--output-ips',   help="Write discovered IP addresses to a file", dest='output_ips', required=False)
@@ -325,7 +317,7 @@ def get_args():
 def setup():
     global targets, wordlist, queue, resolver, recordtype, outfile, outfile_ips
     if args.domain:
-        targets = [args.domain]
+        targets = args.domain.split(",")
     if args.tld and not args.wordlist:
         args.wordlist = os.path.join(os.path.dirname(os.path.realpath(__file__)), "tlds.txt")
     else:
@@ -360,8 +352,14 @@ def setup():
     resolver = dns.resolver.Resolver()
     resolver.timeout = 1
     resolver.lifetime = 1
-    if args.resolver:
-        resolver.nameservers = [ args.resolver ]
+    if args.resolvers_list:
+        try: 
+            resolver.nameservers = open(args.resolvers_list, 'r').read().splitlines()
+        except FileNotFoundError:
+            out.fatal("Could not open file containing resolvers: " + args.wordlist)
+            sys.exit(1)
+    elif args.resolvers:
+        resolver.nameservers = [ args.resolvers.split(",") ]
 
     # Record type
     if args.ipv6:
@@ -404,10 +402,12 @@ if __name__ == "__main__":
         global target
         target = subtarget
         out.status("Processing domain {}".format(target))
-        if args.resolver:
+        if args.resolver_list:
+            out.status("Using resolvers from {}".format(args.resolver))
+        elif args.resolver:
             out.status("Using specified resolver {}".format(args.resolver))
         else:
-            out.status("Using system resolvers {}".format(resolver.nameservers))
+            out.status("Using system resolvers {}".format(",".join(resolver.nameservers)))
         if args.tld and not '%%' in target:
             if "." in target:
                 out.warn("Warning: TLD scanning works best with just the domain root")
@@ -421,6 +421,7 @@ if __name__ == "__main__":
                 nameservers = get_nameservers(target)
                 out.good("Getting nameservers")
                 targetns = []       # NS servers for target
+                nsip = None
                 try:    # Subdomains often don't have NS recoards..
                     for ns in nameservers:
                         ns = str(ns)[:-1]   # Removed trailing dot
