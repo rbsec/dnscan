@@ -109,29 +109,19 @@ class scanner(threading.Thread):
 class output:
     def status(self, message):
         print(col.blue + "[*] " + col.end + message)
-        if outfile and not args.quick:
-            print("[*] " + message, file=outfile)
 
     def good(self, message):
         print(col.green + "[+] " + col.end + message)
-        if outfile and not args.quick:
-            print("[+] " + message, file=outfile)
 
     def verbose(self, message):
         if args.verbose:
             print(col.brown + "[v] " + col.end + message)
-            if outfile and not args.quick:
-                print("[v] " + message, file=outfile)
 
     def warn(self, message):
         print(col.red + "[-] " + col.end + message)
-        if outfile and not args.quick:
-            print("[-] " + message, file=outfile)
 
     def fatal(self, message):
         print("\n" + col.red + "FATAL: " + message + col.end)
-        if outfile and not args.quick:
-            print("FATAL " + message, file=outfile)
 
 
 class col:
