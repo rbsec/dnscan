@@ -58,17 +58,22 @@ class scanner(threading.Thread):
 
     def get_name(self, domain):
             global wildcard, addresses
+            size = int(os.popen('stty size', 'r').read().split()[1]) - 1 # Get terminal width in order to clean output later
             try:
                 if sys.stdout.isatty():     # Don't spam output if redirected
-                    sys.stdout.write(domain + "                              \r")
+                    sys.stdout.write(domain + " " * (size - len(domain)) + "\r")
                     sys.stdout.flush()
                 res = lookup(domain, recordtype)
                 if args.tld and res:
                     nameservers = sorted(list(res))
                     ns0 = str(nameservers[0])[:-1]  # First nameserver
+                    sys.stdout.write(" " * size + "\r")
+                    sys.stdout.flush()
                     print(domain + " - " + col.brown + ns0 + col.end)
                 if args.tld:
                     if res:
+                        sys.stdout.write(" " * size + "\r")
+                        sys.stdout.flush()
                         print(domain + " - " + res)
                     return
                 for rdata in res:
@@ -77,6 +82,8 @@ class scanner(threading.Thread):
                         for wildcard_ip in wildcard:
                             if address == wildcard_ip:
                                 return
+                    sys.stdout.write(" " * size + "\r")
+                    sys.stdout.flush()
                     if args.domain_first:
                         print(domain + " - " + col.brown + address + col.end)
                     else:
@@ -91,7 +98,11 @@ class scanner(threading.Thread):
                     except NameError:
                         addresses.add(ipaddr(str(address)))
 
-                if domain != target and args.recurse:    # Don't scan root domain twice
+                if ( domain != target and \
+                     args.recurse and \
+                     domain.count('.') - target.count('.') <= args.maxdepth
+                     ):
+                    # Check if subdomain is wildcard so can filter false positives in the recursive scan
                     wildcard = get_wildcard(domain)
                     for wildcard_ip in wildcard:
                         try:
@@ -309,13 +320,14 @@ def get_args():
     parser = argparse.ArgumentParser('dnscan.py', formatter_class=lambda prog:argparse.HelpFormatter(prog,max_help_position=40),
             epilog="Specify a custom insertion point with %% in the domain name, such as: dnscan.py -d dev-%%.example.org")
     target = parser.add_mutually_exclusive_group(required=True) # Allow a user to specify a list of target domains
-    target.add_argument('-d', '--domain', help='Target domain', dest='domain', required=False)
+    target.add_argument('-d', '--domain', help='Target domains (separated by commas)', dest='domain', required=False)
     target.add_argument('-l', '--list', help='File containing list of target domains', dest='domain_list', required=False)
     parser.add_argument('-w', '--wordlist', help='Wordlist', dest='wordlist', required=False)
     parser.add_argument('-t', '--threads', help='Number of threads', dest='threads', required=False, type=int, default=8)
     parser.add_argument('-6', '--ipv6', help='Scan for AAAA records', action="store_true", dest='ipv6', required=False, default=False)
     parser.add_argument('-z', '--zonetransfer', action="store_true", default=False, help='Only perform zone transfers', dest='zonetransfer', required=False)
     parser.add_argument('-r', '--recursive', action="store_true", default=False, help="Recursively scan subdomains", dest='recurse', required=False)
+    parser.add_argument('-m', '--maxdepth', help='Maximal recursion depth (for brute-forcing)', dest='maxdepth', required=False, type=int, default=5)
     parser.add_argument('-R', '--resolver', help="Use the specified resolver instead of the system default", dest='resolver', required=False)
     parser.add_argument('-T', '--tld', action="store_true", default=False, help="Scan for TLDs", dest='tld', required=False)
     parser.add_argument('-o', '--output', help="Write output to a file", dest='output_filename', required=False)
@@ -329,7 +341,7 @@ def get_args():
 def setup():
     global targets, wordlist, queue, resolver, recordtype, outfile, outfile_ips
     if args.domain:
-        targets = [args.domain]
+        targets = args.domain.split(",")
     if args.tld and not args.wordlist:
         args.wordlist = os.path.join(os.path.dirname(os.path.realpath(__file__)), "tlds.txt")
     else:
@@ -425,6 +437,7 @@ if __name__ == "__main__":
                 nameservers = get_nameservers(target)
                 out.good("Getting nameservers")
                 targetns = []       # NS servers for target
+                nsip = None
                 try:    # Subdomains often don't have NS recoards..
                     for ns in nameservers:
                         ns = str(ns)[:-1]   # Removed trailing dot
