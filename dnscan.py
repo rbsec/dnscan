@@ -307,7 +307,7 @@ def add_target(domain):
         patterns = [word]
         if args.alt:
             probes = ["dev", "prod", "stg", "qa", "uat", "api", "alpha", "beta",
-                      "cms", "test", "internal", "staging", "origin", "stage", "m"]
+                      "cms", "test", "internal", "staging", "origin", "stage"]
             for probe in probes:
                 patterns.append(probe + word)
                 patterns.append(word + probe)
