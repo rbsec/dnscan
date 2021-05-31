@@ -309,12 +309,14 @@ def add_target(domain):
             probes = ["dev", "prod", "stg", "qa", "uat", "api", "alpha", "beta",
                       "cms", "test", "internal", "staging", "origin", "stage"]
             for probe in probes:
-                patterns.append(probe + word)
-                patterns.append(word + probe)
-                patterns.append(probe + "-" + word)
-                patterns.append(word + "-" + probe)
-            for n in range(1, 10):
-                patterns.append(word + str(n))
+                if probe not in word: # Reduce alterations that most likely don't exist (e.i. dev-dev.domain.com)
+                    patterns.append(probe + word)
+                    patterns.append(word + probe)
+                    patterns.append(probe + "-" + word)
+                    patterns.append(word + "-" + probe)
+            if not word[-1].isdigit(): # Limit the number suffix from 1-9
+                for n in range(1, 10):
+                    patterns.append(word + str(n))
         for pattern in patterns:
             if '%%' in domain:
                 queue.put(domain.replace(r'%%', pattern))
