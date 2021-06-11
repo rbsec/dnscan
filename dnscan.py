@@ -314,9 +314,10 @@ def add_target(domain):
                     patterns.append(word + probe)
                     patterns.append(probe + "-" + word)
                     patterns.append(word + "-" + probe)
-            if not word[-1].isdigit(): # Limit the number suffix from 1-9
-                for n in range(1, 10):
+            if not word[-1].isdigit(): # If the subdomain has already had a number as the suffix
+                for n in range(1, 6):
                     patterns.append(word + str(n))
+                    patterns.append(word + "0" + str(n))
         for pattern in patterns:
             if '%%' in domain:
                 queue.put(domain.replace(r'%%', pattern))
