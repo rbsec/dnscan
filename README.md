@@ -23,6 +23,7 @@ dnscan.py (-d \<domain\> | -l \<list\>) [OPTIONS]
     -z --zonetransfer                         Perform zone transfer and exit
     -r --recursive                            Recursively scan subdomains
     -m --maxdepth                             Maximum levels to scan recursively
+    -a --alterations                          Scan for alterations of subdomains (slow)
     -R --resolver <resolver>                  Use the specified resolver instead of the system default
     -L --resolver-list <file>                 Read list of resolvers from a file
     -T --tld                                  Scan for the domain in all TLDs
@@ -58,6 +59,11 @@ TLD Scanning
 The -T (--tld) option can be used to scan for all of the TLDs a specific domain name exists in. By default it will use the **tlds.txt** list, which contains all of the TLDs listed by IANA (including new TLDs). You can also specify a custom wordlist with -w. The **suffixes.txt** file included is a cut-down version of the public suffix list, so will include most of the second level domains (such as co.uk).
 
 Note that when you use this option, you should only specify the base of the domain name ("github", not "github.com").
+
+Alterations
+-----------
+The `-a`/`--alterations` switch adds various prefixes and suffixes (such as `dev`, `test`, `01`, etc) to the domains, with and without hyphens. This generates **a lot** of extra permutations (approximately 60 permutations per domain), so is much slower, especially with larger wordlists.
+
 
 Setup
 -----

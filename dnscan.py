@@ -342,7 +342,7 @@ def get_args():
     parser.add_argument('-z', '--zonetransfer', action="store_true", help='Only perform zone transfers', dest='zonetransfer')
     parser.add_argument('-r', '--recursive', action="store_true", help="Recursively scan subdomains", dest='recurse')
     parser.add_argument('-m', '--maxdepth', help='Maximal recursion depth (for brute-forcing)', dest='maxdepth', required=False, type=int, default=5)
-    parser.add_argument('-a', '--alterations', action="store_true", help='Scan for alterations of subdomains', dest='alt')
+    parser.add_argument('-a', '--alterations', action="store_true", help='Scan for alterations of subdomains (slow)', dest='alt')
     parser.add_argument('-R', '--resolver', help="Use the specified resolvers (separated by commas)", dest='resolvers', required=False)
     parser.add_argument('-L', '--resolver-list', help="File containing list of resolvers", dest='resolver_list', required=False)
     parser.add_argument('-T', '--tld', action="store_true", help="Scan for TLDs", dest='tld')
