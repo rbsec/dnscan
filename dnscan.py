@@ -84,7 +84,10 @@ class scanner(threading.Thread):
                                 return
                     sys.stdout.write(" " * size + "\r")
                     sys.stdout.flush()
-                    if args.domain_first:
+                    if args.no_ip:
+                        print(col.brown + domain + col.end)
+                        break
+                    elif args.domain_first:
                         print(domain + " - " + col.brown + address + col.end)
                     else:
                         print(address + " - " + col.brown + domain + col.end)
@@ -349,6 +352,7 @@ def get_args():
     parser.add_argument('-o', '--output', help="Write output to a file", dest='output_filename', required=False)
     parser.add_argument('-i', '--output-ips', help="Write discovered IP addresses to a file", dest='output_ips', required=False)
     parser.add_argument('-D', '--domain-first', action="store_true", help='Output domain first, rather than IP address', dest='domain_first')
+    parser.add_argument('-N', '--no-ip', action="store_true", help='Don\'t print IP addresses in the output', dest='no_ip')
     parser.add_argument('-v', '--verbose', action="store_true", help='Verbose mode', dest='verbose')
     parser.add_argument('-n', '--nocheck', action="store_true", help='Don\'t check nameservers before scanning', dest='nocheck')
     parser.add_argument('-q', '--quick', action="store_true", help='Only perform zone transfer and subdomains scan, with minimal output to file', dest='quick')
