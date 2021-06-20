@@ -31,6 +31,7 @@ dnscan.py (-d \<domain\> | -l \<list\>) [OPTIONS]
     -i --output-ips <filename>                Output discovered IP addresses to a text file
     -n --nocheck                              Don't check nameservers before scanning. Useful in airgapped networks
     -q --quick                                Only perform the zone transfer and subdomain scans. Suppresses most file output with -o
+    -N --no-ip                                Don't print IP addresses in the output
     -v --verbose                              Verbose output
     -h --help                                 Display help text
 
