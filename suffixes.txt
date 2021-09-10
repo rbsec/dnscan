@@ -5585,7 +5585,6 @@ blogspot.sg
 blogspot.si
 blogspot.sk
 blogspot.sn
-blogspot.td
 blogspot.tw
 blogspot.ug
 blogspot.vn
@@ -5603,7 +5602,6 @@ hasura.app
 hasura-app.io
 herokuapp.com
 herokussl.com
-myravendb.com
 ravendb.community
 ravendb.me
 development.run
@@ -5843,7 +5841,6 @@ nom.af
 nom.ai
 nom.al
 nym.by
-nom.cl
 nym.ec
 nom.gd
 nom.ge
@@ -5859,7 +5856,6 @@ nom.ke
 nym.kz
 nym.la
 nym.lc
-nom.li
 nym.lt
 nym.lu
 nom.lv
@@ -5918,7 +5914,6 @@ repl.co
 repl.run
 resindevice.io
 devices.resinstaging.io
-wellbeingzone.eu
 wellbeingzone.co.uk
 git-pages.rit.edu
 sandcats.io
