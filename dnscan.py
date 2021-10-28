@@ -37,7 +37,6 @@ except:
     sys.exit(1)
 
 try:
-    import dns.dnssec
     import dns.query
     import dns.resolver
     import dns.zone
