@@ -58,11 +58,14 @@ class scanner(threading.Thread):
 
     def get_name(self, domain):
             global wildcard, addresses
-            size = int(os.popen('stty size', 'r').read().split()[1]) - 1 # Get terminal width in order to clean output later
             try:
                 if sys.stdout.isatty():     # Don't spam output if redirected
+                    size = int(os.popen('stty size', 'r').read().split()[1]) - 1 # Get terminal width in order to clean output later
                     sys.stdout.write(domain + " " * (size - len(domain)) + "\r")
                     sys.stdout.flush()
+                else:
+
+                    size = 0
                 res = lookup(domain, recordtype)
                 if args.tld and res:
                     nameservers = sorted(list(res))
