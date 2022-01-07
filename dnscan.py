@@ -40,6 +40,7 @@ try:
     import dns.query
     import dns.resolver
     import dns.zone
+    import dns.dnssec
 except:
     print("FATAL: Module dnspython missing (python-dnspython)")
     sys.exit(1)
@@ -428,7 +429,7 @@ if __name__ == "__main__":
             resolver.resolve('.', 'NS')
         except dns.resolver.NoAnswer:
             pass
-        except dns.exception.Timeout:
+        except:
             out.fatal("No valid DNS resolver. This can occur when the server only resolves internal zones")
             out.fatal("Set a custom resolver with -R <resolver>")
             out.fatal("Ignore this warning with -n --nocheck\n")
