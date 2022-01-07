@@ -429,6 +429,9 @@ if __name__ == "__main__":
             resolver.resolve('.', 'NS')
         except dns.resolver.NoAnswer:
             pass
+        except dns.resolver.NoNameServers:
+            out.warn("Failed to resolve '.' - server may be buggy. Continuing anyway....")
+            pass
         except:
             out.fatal("No valid DNS resolver. This can occur when the server only resolves internal zones")
             out.fatal("Set a custom resolver with -R <resolver>")
