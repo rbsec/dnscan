@@ -515,7 +515,7 @@ if __name__ == "__main__":
 
         for i in range(args.threads):
             t = scanner(queue)
-            t.setDaemon(True)
+            t.daemon = True
             t.start()
         try:
             for i in range(args.threads):
