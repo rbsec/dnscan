@@ -4,7 +4,7 @@
 # Licensed under GPLv3, see LICENSE for details
 #
 from __future__ import print_function
-from distutils.version import LooseVersion
+import packaging.version
 
 import os
 import platform
@@ -45,7 +45,7 @@ except:
     print("FATAL: Module dnspython missing (python-dnspython)")
     sys.exit(1)
 
-if (LooseVersion(dns.__version__) < LooseVersion("2.0.0")):
+if (packaging.version.parse(dns.__version__) < packaging.version.Version("2.0.0")):
     print("dnscan requires dnspython 2.0.0 or greater.\nYou can install it with `pip install -r requirements.txt`")
     sys.exit(1)
 
