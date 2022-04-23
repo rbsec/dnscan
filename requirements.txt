@@ -1,3 +1,4 @@
 dnspython>=2.0.0
 netaddr>=0.7.19
 cryptography>=3.3.2
+packaging>=21.3
