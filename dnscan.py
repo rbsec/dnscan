@@ -74,6 +74,8 @@ class scanner(threading.Thread):
                     sys.stdout.write(" " * size + "\r")
                     sys.stdout.flush()
                     print(domain + " - " + col.brown + ns0 + col.end)
+                    if outfile:
+                        print(ns0 + " - " + domain, file=outfile)
                 if args.tld:
                     if res:
                         sys.stdout.write(" " * size + "\r")
