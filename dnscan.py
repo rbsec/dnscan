@@ -431,7 +431,7 @@ if __name__ == "__main__":
             resolver.resolve('.', 'NS')
         except dns.resolver.NoAnswer:
             pass
-        except dns.resolver.NoNameServers:
+        except dns.resolver.NoNameservers:
             out.warn("Failed to resolve '.' - server may be buggy. Continuing anyway....")
             pass
         except:
