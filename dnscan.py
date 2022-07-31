@@ -61,25 +61,19 @@ class scanner(threading.Thread):
             global wildcard, addresses
             try:
                 if sys.stdout.isatty():     # Don't spam output if redirected
-                    size = int(os.popen('stty size', 'r').read().split()[1]) - 1 # Get terminal width in order to clean output later
-                    sys.stdout.write(domain + " " * (size - len(domain)) + "\r")
-                    sys.stdout.flush()
-                else:
+                    print(domain + '\033[K\r', end='')
 
-                    size = 0
                 res = lookup(domain, recordtype)
                 if args.tld and res:
                     nameservers = sorted(list(res))
                     ns0 = str(nameservers[0])[:-1]  # First nameserver
-                    sys.stdout.write(" " * size + "\r")
-                    sys.stdout.flush()
+                    print('\033[K\r', end='')
                     print(domain + " - " + col.brown + ns0 + col.end)
                     if outfile:
                         print(ns0 + " - " + domain, file=outfile)
                 if args.tld:
                     if res:
-                        sys.stdout.write(" " * size + "\r")
-                        sys.stdout.flush()
+                        print('\033[K\r', end='')
                         print(domain + " - " + res)
                     return
                 for rdata in res:
@@ -88,8 +82,7 @@ class scanner(threading.Thread):
                         for wildcard_ip in wildcard:
                             if address == wildcard_ip:
                                 return
-                    sys.stdout.write(" " * size + "\r")
-                    sys.stdout.flush()
+                    print('\033[K\r', end='')
                     if args.no_ip:
                         print(col.brown + domain + col.end)
                         break
@@ -394,7 +387,6 @@ def setup():
     except:
         out.fatal("Could not open wordlist " + args.wordlist)
         sys.exit(1)
-
     # Number of threads should be between 1 and 32
     if args.threads < 1:
         args.threads = 1
