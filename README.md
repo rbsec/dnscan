@@ -22,6 +22,8 @@ dnscan.py (-d \<domain\> | -l \<list\>) [OPTIONS]
     -6 --ipv6                                 Scan for IPv6 records (AAAA)
     -z --zonetransfer                         Perform zone transfer and exit
     -r --recursive                            Recursively scan subdomains
+       --recurse-wildcards                    Recursively scan wildcards (slow)
+
     -m --maxdepth                             Maximum levels to scan recursively
     -a --alterations                          Scan for alterations of subdomains (slow)
     -R --resolver <resolver>                  Use the specified resolver instead of the system default

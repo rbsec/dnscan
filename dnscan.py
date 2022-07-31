@@ -118,7 +118,8 @@ class scanner(threading.Thread):
                             addresses.add(ipaddr(unicode(wildcard_ip)))
                         except NameError:
                             addresses.add(ipaddr(str(wildcard_ip)))
-                    add_target(domain)  # Recursively scan subdomains
+                    if args.recurse_wildcards or not wildcard:
+                        add_target(domain)  # Recursively scan subdomains
             except:
                 pass
 
@@ -350,6 +351,7 @@ def get_args():
     parser.add_argument('-6', '--ipv6', action="store_true", help='Scan for AAAA records', dest='ipv6')
     parser.add_argument('-z', '--zonetransfer', action="store_true", help='Only perform zone transfers', dest='zonetransfer')
     parser.add_argument('-r', '--recursive', action="store_true", help="Recursively scan subdomains", dest='recurse')
+    parser.add_argument('--recurse-wildcards', action="store_true", help="Recursively scan wildcards (slow)", dest='recurse_wildcards')
     parser.add_argument('-m', '--maxdepth', help='Maximal recursion depth (for brute-forcing)', dest='maxdepth', required=False, type=int, default=5)
     parser.add_argument('-a', '--alterations', action="store_true", help='Scan for alterations of subdomains (slow)', dest='alt')
     parser.add_argument('-R', '--resolver', help="Use the specified resolvers (separated by commas)", dest='resolvers', required=False)
