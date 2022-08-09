@@ -245,7 +245,7 @@ def get_dmarc(target):
 def get_dnssec(target, nameserver):
     out.verbose("Checking DNSSEC")
     request = dns.message.make_query(target, dns.rdatatype.DNSKEY, want_dnssec=True)
-    response = dns.query.udp(request, nameserver)
+    response = dns.query.udp(request, nameserver, timeout=1)
     if response.rcode() != 0:
         out.warn("DNSKEY lookup returned error code " + dns.rcode.to_text(response.rcode()) + "\n")
     else:
@@ -289,10 +289,11 @@ def get_mx(target):
             pass
     print("")
 
-def zone_transfer(domain, ns):
+def zone_transfer(domain, ns, nsip):
     out.verbose("Trying zone transfer against " + str(ns))
     try:
-        zone = dns.zone.from_xfr(dns.query.xfr(str(ns), domain, relativize=False),
+        print(str(domain))
+        zone = dns.zone.from_xfr(dns.query.xfr(str(nsip), domain, relativize=False, timeout=3),
                                  relativize=False)
         out.good("Zone transfer sucessful using nameserver " + col.brown + str(ns) + col.end)
         names = list(zone.nodes.keys())
@@ -480,7 +481,7 @@ if __name__ == "__main__":
                             if not args.quick:
                                 if outfile:
                                     print(nsip + " - " + ns, file=outfile)
-                        zone_transfer(target, ns)
+                        zone_transfer(target, ns, nsip)
                 except SystemExit:
                     sys.exit(0)
                 except:
