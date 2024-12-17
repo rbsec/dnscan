@@ -281,7 +281,7 @@ def get_mx(target):
         print(mx.to_text())
         if outfile:
             print(mx.to_text(), file=outfile)
-        mxsub = re.search("([a-z0-9\.\-]+)\."+target, mx.to_text(), re.IGNORECASE)
+        mxsub = re.search(r'([a-z0-9.-]+)\.'+target, mx.to_text(), re.IGNORECASE)
         try:
             if mxsub.group(1) and mxsub.group(1) not in wordlist:
                 queue.put(mxsub.group(1) + "." + target)
